@@ -19,20 +19,24 @@
 #include <stm32f0xx_usart.h>
 #include <stm32f0xx_gpio.h>
 #include <stm32f0xx_dma.h>
+#include <stm32f0xx_syscfg.h>
 #include <stdio.h>
 //====================================================================
 // GLOBAL CONSTANTS
 //====================================================================
-
+#define USART1_RDR_Address 0x40013824
+#define USART1_TDR_Address 0x40013828
 //====================================================================
 // GLOBAL VARIABLES
 //====================================================================
+uint8_t RxBuffer [26] = {0};
 char lcdstring[16];
 uint16_t temp = 0;
 char lcdstring[16];
 //================GPIO_ODR_0====================================================
 // FUNCTION DECLARATIONS
 //====================================================================
+void init_clocks(void);
 void init_ports(void);
 void Usart_config(void);
 void dma_config(void);
@@ -43,45 +47,85 @@ void init_NVIC(void);
 //====================================================================
 void main (void)
 {
+	init_clocks();
 	init_ports();
+	//GPIOS Enabled HERE
 	init_LCD();								// Initialise lcd
-	init_NVIC();
+	lcd_putstring("SW0 to Start");
+	while((GPIOA->IDR)&(GPIO_IDR_0)); //wait for DMA config
 	Usart_config();
 	dma_config();
-	start_coms();
-	lcd_putstring("USART TEST2");		// Display string on line 1
+	init_NVIC();
+	lcd_command(CLEAR);
+	lcd_putstring("USART TEST");		// Display string on line 1
 	for(;;){
-		lcd_command(LINE_TWO);
-		//temp = (USART1->RDR);
+		lcd_command(CURSOR_HOME);
+		int temp = DMA_GetCurrDataCounter(DMA1_Channel3);
 		sprintf(lcdstring,"GPIOB: %d",temp);
 		lcd_putstring(lcdstring);
 	}
 }										// End of main
+
+void init_clocks(void){
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG,1);	//clock Sys config
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB,1);		//clock GPIOB
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,1);	//clock USART1
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,1);		//clock DMA
+}
+
+void init_ports(void){
+	//Init GPIOA
+	GPIO_InitTypeDef GPIOA_init;
+	GPIOA_init.GPIO_Pin=(GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3);
+	GPIOA_init.GPIO_Mode=GPIO_Mode_IN;
+	GPIOA_init.GPIO_PuPd=GPIO_PuPd_UP;
+	GPIO_Init(GPIOA,&GPIOA_init);
+	//Init GPIOB
+	GPIO_InitTypeDef GPIOB_init;
+	GPIOB_init.GPIO_Pin=(GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5); //enable PB0-5
+	GPIOB_init.GPIO_Mode=GPIO_Mode_OUT;			//as outputs
+	GPIOB_init.GPIO_PuPd=GPIO_PuPd_NOPULL;		//no pullup resistors
+	GPIO_Init(GPIOB,&GPIOB_init);
+	//GPIOB Alternate Function init
+	GPIOB->MODER|=(GPIO_MODER_MODER6_1|GPIO_MODER_MODER7_1); //set PB6-7 to AF for USART1 RX/TX
+	GPIOB->PUPDR|=(GPIO_PUPDR_PUPDR6_0|GPIO_PUPDR_PUPDR7_0); //Set Pullup resistor
+	GPIOB->OSPEEDR|=(GPIO_OSPEEDR_OSPEEDR6|GPIO_OSPEEDER_OSPEEDR7);	//highspeed outputs
+	GPIO_PinAFConfig(GPIOB,(GPIO_PinSource6|GPIO_PinSource7),GPIO_AF_0); //PB6-7 AF0
+}
+
 void Usart_config(void){
 	USART_InitTypeDef Usart1_init;
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,1);
 	Usart1_init.USART_BaudRate=100000;
 	Usart1_init.USART_WordLength=USART_WordLength_8b;
 	Usart1_init.USART_StopBits=USART_StopBits_2;
 	Usart1_init.USART_Parity=USART_Parity_Even;
 	Usart1_init.USART_HardwareFlowControl=USART_HardwareFlowControl_None;
-	Usart1_init.USART_Mode=USART_Mode_Rx;
+	Usart1_init.USART_Mode=USART_Mode_Rx|USART_Mode_Tx;
 	USART_Init(USART1,&Usart1_init);
 	USART1->CR1|=USART_CR1_PCE;
-	USART1->CR2|=USART_CR2_MSBFIRST|USART_CR2_DATAINV;
-	USART_ITConfig(USART1,USART_IT_RXNE,1);
+	USART1->CR2|=(USART_CR2_MSBFIRST|USART_CR2_DATAINV);
+	USART1->CR3|=USART_CR3_DMAR;
+	//USART_ITConfig(USART1,USART_IT_RXNE,1);
 }
-void init_ports(void){
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB,1);
-	GPIO_InitTypeDef GPIOB_init;
-	GPIOB_init.GPIO_Pin=(GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5);
-	GPIOB_init.GPIO_Mode=GPIO_Mode_OUT;
-	GPIOB_init.GPIO_PuPd=GPIO_PuPd_NOPULL;
-	GPIO_Init(GPIOB,&GPIOB_init);
-	GPIOB->MODER|=(GPIO_MODER_MODER6_1|GPIO_MODER_MODER7_1);
-	GPIOB->PUPDR|=(GPIO_PUPDR_PUPDR6_0|GPIO_PUPDR_PUPDR7_0);
-	GPIOB->OSPEEDR|=(GPIO_OSPEEDR_OSPEEDR6|GPIO_OSPEEDER_OSPEEDR7);
-	GPIO_PinAFConfig(GPIOB,(GPIO_PinSource6|GPIO_PinSource7),GPIO_AF_0);
+void dma_config(void){
+	USART_Cmd(USART1,1);
+	DMA_InitTypeDef DMA_struct;
+	DMA_struct.DMA_BufferSize=sizeof(RxBuffer); //26 byte buffer
+	DMA_struct.DMA_PeripheralDataSize=DMA_PeripheralDataSize_Byte; //8 Bit peripheral data size
+	DMA_struct.DMA_MemoryDataSize=DMA_MemoryDataSize_Byte;
+	DMA_struct.DMA_PeripheralInc=DMA_PeripheralInc_Disable;
+	DMA_struct.DMA_MemoryInc=DMA_MemoryInc_Enable;
+	DMA_struct.DMA_Mode=DMA_Mode_Circular;
+	DMA_struct.DMA_M2M=DMA_M2M_Disable;
+	//
+	DMA_struct.DMA_MemoryBaseAddr=(uint32_t)RxBuffer;
+	DMA_struct.DMA_DIR=DMA_DIR_PeripheralSRC;
+	DMA_struct.DMA_Priority=DMA_Priority_Medium;
+	DMA_struct.DMA_PeripheralBaseAddr=(uint32_t)(USART1->RDR);
+	DMA_Init(DMA1_Channel3,&DMA_struct);
+	SYSCFG_DMAChannelRemapConfig(SYSCFG_DMARemap_USART1Rx,1);
+	USART_DMACmd(USART1,USART_DMAReq_Rx,1);
+	DMA_Cmd(DMA1_Channel3,1);
 }
 
 void init_NVIC(void){
@@ -102,9 +146,7 @@ void USART1_IRQHandler(void){
 		USART_ClearFlag(USART1,USART_FLAG_RXNE);
 	}
 }
-void start_coms(void){
-	USART_Cmd(USART1,1);
-}
+
 //********************************************************************
 // END OF PROGRAM
 //********************************************************************
