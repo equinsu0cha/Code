@@ -34,8 +34,15 @@ c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none
 Allocating common symbols
 Common symbol       size              file
 
+ch3                 0x2               src\main.o
 errno               0x4               system\src\newlib\_syscalls.o
+ch2                 0x2               src\main.o
+ch4                 0x2               src\main.o
+ch5                 0x2               src\main.o
 lcdstring           0x10              src\main.o
+ch6                 0x2               src\main.o
+RxBuffer            0x18              src\main.o
+ch1                 0x2               src\main.o
 
 Discarded input sections
 
@@ -146,6 +153,7 @@ Discarded input sections
  .text          0x00000000        0x0 src\main.o
  .data          0x00000000        0x0 src\main.o
  .bss           0x00000000        0x0 src\main.o
+ .bss.temp      0x00000000        0x2 src\main.o
  .debug_macro   0x00000000      0x832 src\main.o
  .debug_macro   0x00000000       0x7a src\main.o
  .debug_macro   0x00000000      0x34e src\main.o
@@ -1786,9 +1794,13 @@ Discarded input sections
  .bss           0x00000000        0x0 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
  .text.DMA_DeInit
                 0x00000000       0xf8 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+ .text.DMA_Init
+                0x00000000      0x16c system\src\stm32f0-stdperiph\stm32f0xx_dma.o
  .text.DMA_StructInit
                 0x00000000       0x1c system\src\stm32f0-stdperiph\stm32f0xx_dma.o
  .text.DMA_SetCurrDataCounter
+                0x00000000       0x60 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+ .text.DMA_GetCurrDataCounter
                 0x00000000       0x60 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
  .text.DMA_ITConfig
                 0x00000000       0x94 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
@@ -1864,8 +1876,6 @@ Discarded input sections
  .bss           0x00000000        0x0 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
  .text.EXTI_DeInit
                 0x00000000       0x20 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .text.EXTI_Init
-                0x00000000       0xcc system\src\stm32f0-stdperiph\stm32f0xx_exti.o
  .text.EXTI_StructInit
                 0x00000000       0x10 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
  .text.EXTI_GenerateSWInterrupt
@@ -1876,17 +1886,6 @@ Discarded input sections
                 0x00000000       0x28 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
  .text.EXTI_GetITStatus
                 0x00000000       0xe4 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .text.EXTI_ClearITPendingBit
-                0x00000000       0x28 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .rodata.str1.4
-                0x00000000       0x31 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .debug_info    0x00000000      0x436 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .debug_abbrev  0x00000000      0x1e1 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .debug_loc     0x00000000      0x1a7 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .debug_aranges
-                0x00000000       0x58 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .debug_ranges  0x00000000       0x48 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .debug_macro   0x00000000      0x16b system\src\stm32f0-stdperiph\stm32f0xx_exti.o
  .debug_macro   0x00000000      0x832 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
  .debug_macro   0x00000000       0x7a system\src\stm32f0-stdperiph\stm32f0xx_exti.o
  .debug_macro   0x00000000      0x34e system\src\stm32f0-stdperiph\stm32f0xx_exti.o
@@ -1916,13 +1915,6 @@ Discarded input sections
  .debug_macro   0x00000000      0x353 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
  .debug_macro   0x00000000       0x34 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
  .debug_macro   0x00000000       0x3a system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .debug_macro   0x00000000       0xd1 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .debug_line    0x00000000      0x566 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .debug_str     0x00000000    0x3f20f system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .comment       0x00000000       0x6f system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .debug_frame   0x00000000       0xc0 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
- .ARM.attributes
-                0x00000000       0x31 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
  .group         0x00000000        0x8 system\src\stm32f0-stdperiph\stm32f0xx_flash.o
  .group         0x00000000        0x8 system\src\stm32f0-stdperiph\stm32f0xx_flash.o
  .group         0x00000000        0x8 system\src\stm32f0-stdperiph\stm32f0xx_flash.o
@@ -2116,8 +2108,6 @@ Discarded input sections
                 0x00000000       0x60 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
  .text.GPIO_WriteBit
                 0x00000000       0xd4 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
- .text.GPIO_Write
-                0x00000000       0x54 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
  .debug_macro   0x00000000      0x832 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
  .debug_macro   0x00000000       0x7a system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
  .debug_macro   0x00000000      0x34e system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
@@ -2647,6 +2637,8 @@ Discarded input sections
                 0x00000000       0x70 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
  .text.RCC_USBCLKConfig
                 0x00000000       0x30 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+ .text.RCC_GetClocksFreq
+                0x00000000      0x1a0 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
  .text.RCC_RTCCLKConfig
                 0x00000000       0x3c system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
  .text.RCC_RTCCLKCmd
@@ -2656,10 +2648,6 @@ Discarded input sections
  .text.RCC_APB1PeriphClockCmd
                 0x00000000       0x50 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
  .text.RCC_AHBPeriphResetCmd
-                0x00000000       0x50 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
- .text.RCC_APB2PeriphResetCmd
-                0x00000000       0x50 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
- .text.RCC_APB1PeriphResetCmd
                 0x00000000       0x50 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
  .text.RCC_ITConfig
                 0x00000000       0x48 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
@@ -2673,6 +2661,8 @@ Discarded input sections
                 0x00000000       0x48 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
  .text.RCC_ClearITPendingBit
                 0x00000000       0x20 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+ .data.APBAHBPrescTable
+                0x00000000       0x10 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
  .debug_macro   0x00000000      0x832 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
  .debug_macro   0x00000000       0x7a system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
  .debug_macro   0x00000000      0x34e system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
@@ -3061,10 +3051,10 @@ Discarded input sections
                 0x00000000       0x24 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
  .text.SYSCFG_MemoryRemapConfig
                 0x00000000       0x2c system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+ .text.SYSCFG_DMAChannelRemapConfig
+                0x00000000       0xac system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
  .text.SYSCFG_I2CFastModePlusConfig
                 0x00000000       0x7c system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
- .text.SYSCFG_EXTILineConfig
-                0x00000000       0x48 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
  .text.SYSCFG_BreakConfig
                 0x00000000       0x2c system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
  .text.SYSCFG_GetFlagStatus
@@ -3396,18 +3386,26 @@ Discarded input sections
  .text          0x00000000        0x0 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .data          0x00000000        0x0 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .bss           0x00000000        0x0 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
- .text.USART_DeInit
-                0x00000000       0xa8 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .text.USART_Init
+                0x00000000      0x1a8 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .text.USART_StructInit
                 0x00000000       0x18 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .text.USART_ClockInit
                 0x00000000       0xbc system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .text.USART_ClockStructInit
                 0x00000000        0xc system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .text.USART_Cmd
+                0x00000000       0x64 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .text.USART_DirectionModeCmd
+                0x00000000       0x78 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .text.USART_OverSampling8Cmd
                 0x00000000       0x68 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .text.USART_OneBitMethodCmd
                 0x00000000       0x68 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .text.USART_MSBFirstCmd
+                0x00000000       0x6c system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .text.USART_DataInvCmd
+                0x00000000       0x6c system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .text.USART_InvPinCmd
                 0x00000000       0x7c system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .text.USART_SWAPPinCmd
@@ -3466,6 +3464,8 @@ Discarded input sections
                 0x00000000       0x64 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .text.USART_SetDEDeassertionTime
                 0x00000000       0x64 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .text.USART_DMACmd
+                0x00000000       0x7c system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .text.USART_DMAReceptionErrorConfig
                 0x00000000       0x6c system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .text.USART_ITConfig
@@ -3476,6 +3476,10 @@ Discarded input sections
                 0x00000000       0x68 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .text.USART_GetFlagStatus
                 0x00000000       0xe8 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .text.USART_ClearFlag
+                0x00000000       0x98 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .text.USART_GetITStatus
+                0x00000000      0x118 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .text.USART_ClearITPendingBit
                 0x00000000       0xcc system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .debug_macro   0x00000000      0x832 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
@@ -3766,7 +3770,6 @@ END GROUP
                 0x080000c4                DMA1_Channel4_5_IRQHandler
                 0x080000c4                TIM7_IRQHandler
                 0x080000c4                TIM15_IRQHandler
-                0x080000c4                EXTI0_1_IRQHandler
                 0x080000c4                USB_IRQHandler
                 0x080000c4                SPI2_IRQHandler
                 0x080000c4                TS_IRQHandler
@@ -3775,6 +3778,7 @@ END GROUP
                 0x080000c4                DMA1_Channel2_3_IRQHandler
                 0x080000c4                USART2_IRQHandler
                 0x080000c4                FLASH_IRQHandler
+                0x080000c4                USART1_IRQHandler
                 0x080000c4                TIM1_BRK_UP_TRG_COM_IRQHandler
  .after_vectors
                 0x080000c8       0x38 system\src\cortexm\exception_handlers.o
@@ -3791,15 +3795,15 @@ END GROUP
 
 .inits          0x08000218       0x28
                 0x08000218                __data_regions_array_start = .
-                0x08000218        0x4 LONG 0x80021b0 LOADADDR (.data)
+                0x08000218        0x4 LONG 0x8001afc LOADADDR (.data)
                 0x0800021c        0x4 LONG 0x20000000 ADDR (.data)
-                0x08000220        0x4 LONG 0x20000098 (ADDR (.data) + SIZEOF (.data))
-                0x08000224        0x4 LONG 0x80021b0 LOADADDR (.data_CCMRAM)
+                0x08000220        0x4 LONG 0x20000088 (ADDR (.data) + SIZEOF (.data))
+                0x08000224        0x4 LONG 0x8001afc LOADADDR (.data_CCMRAM)
                 0x08000228        0x4 LONG 0x0 ADDR (.data_CCMRAM)
                 0x0800022c        0x4 LONG 0x0 (ADDR (.data_CCMRAM) + SIZEOF (.data_CCMRAM))
                 0x08000230                __data_regions_array_end = .
                 0x08000230                __bss_regions_array_start = .
-                0x08000230        0x4 LONG 0x20000098 ADDR (.bss)
+                0x08000230        0x4 LONG 0x20000088 ADDR (.bss)
                 0x08000234        0x4 LONG 0x200000e0 (ADDR (.bss) + SIZEOF (.bss))
                 0x08000238        0x4 LONG 0x0 ADDR (.bss_CCMRAM)
                 0x0800023c        0x4 LONG 0x0 (ADDR (.bss_CCMRAM) + SIZEOF (.bss_CCMRAM))
@@ -3826,7 +3830,7 @@ END GROUP
 .flashtext
  *(.flashtext .flashtext.*)
 
-.text           0x08000240     0x1f6d
+.text           0x08000240     0x18b9
  *(.text .text.*)
  .text.delay    0x08000240       0x20 src\lcd_stm32f0.o
                 0x08000240                delay
@@ -3845,215 +3849,200 @@ END GROUP
  .text.init_LCD
                 0x08000508       0x80 src\lcd_stm32f0.o
                 0x08000508                init_LCD
- .text.init_clocks
-                0x08000588       0x18 src\main.o
-                0x08000588                init_clocks
  .text.init_ports
-                0x080005a0       0x74 src\main.o
-                0x080005a0                init_ports
- .text.Usart_config
-                0x08000614       0x60 src\main.o
-                0x08000614                Usart_config
- .text.dma_config
-                0x08000674       0x54 src\main.o
-                0x08000674                dma_config
+                0x08000588       0x6c src\main.o
+                0x08000588                init_ports
+ .text.DMAUSART_config
+                0x080005f4       0x6c src\main.o
+                0x080005f4                DMAUSART_config
+ .text.init_EXTI
+                0x08000660       0x28 src\main.o
+                0x08000660                init_EXTI
  .text.init_NVIC
-                0x080006c8       0x1c src\main.o
-                0x080006c8                init_NVIC
- .text.main     0x080006e4       0x74 src\main.o
-                0x080006e4                main
- .text.USART1_IRQHandler
-                0x08000758       0x58 src\main.o
-                0x08000758                USART1_IRQHandler
+                0x08000688       0x1c src\main.o
+                0x08000688                init_NVIC
+ .text.main     0x080006a4       0xc0 src\main.o
+                0x080006a4                main
+ .text.EXTI0_1_IRQHandler
+                0x08000764       0x30 src\main.o
+                0x08000764                EXTI0_1_IRQHandler
  .text.SetSysClock
-                0x080007b0       0xb0 system\src\cmsis\system_stm32f0xx.o
+                0x08000794       0xb0 system\src\cmsis\system_stm32f0xx.o
  .text.SystemInit
-                0x08000860       0x64 system\src\cmsis\system_stm32f0xx.o
-                0x08000860                SystemInit
+                0x08000844       0x64 system\src\cmsis\system_stm32f0xx.o
+                0x08000844                SystemInit
  .text.SystemCoreClockUpdate
-                0x080008c4       0x94 system\src\cmsis\system_stm32f0xx.o
-                0x080008c4                SystemCoreClockUpdate
+                0x080008a8       0x94 system\src\cmsis\system_stm32f0xx.o
+                0x080008a8                SystemCoreClockUpdate
  .text.__initialize_hardware_early
-                0x08000958        0x8 system\src\cortexm\_initialize_hardware.o
-                0x08000958                __initialize_hardware_early
+                0x0800093c        0x8 system\src\cortexm\_initialize_hardware.o
+                0x0800093c                __initialize_hardware_early
  .text.__initialize_hardware
-                0x08000960        0x8 system\src\cortexm\_initialize_hardware.o
-                0x08000960                __initialize_hardware
- .text._exit    0x08000968        0x4 system\src\newlib\_exit.o
-                0x08000968                _exit
- .text.abort    0x0800096c        0x8 system\src\newlib\_exit.o
-                0x0800096c                abort
- .text._sbrk    0x08000974       0x44 system\src\newlib\_sbrk.o
-                0x08000974                _sbrk
+                0x08000944        0x8 system\src\cortexm\_initialize_hardware.o
+                0x08000944                __initialize_hardware
+ .text._exit    0x0800094c        0x4 system\src\newlib\_exit.o
+                0x0800094c                _exit
+ .text.abort    0x08000950        0x8 system\src\newlib\_exit.o
+                0x08000950                abort
+ .text._sbrk    0x08000958       0x44 system\src\newlib\_sbrk.o
+                0x08000958                _sbrk
  .text.__initialize_args
-                0x080009b8       0x10 system\src\newlib\_syscalls.o
-                0x080009b8                __initialize_args
+                0x0800099c       0x10 system\src\newlib\_syscalls.o
+                0x0800099c                __initialize_args
  .text.assert_failed
-                0x080009c8        0x8 system\src\newlib\assert.o
-                0x080009c8                assert_failed
- .text.DMA_Init
-                0x080009d0      0x16c system\src\stm32f0-stdperiph\stm32f0xx_dma.o
-                0x080009d0                DMA_Init
- .text.DMA_Cmd  0x08000b3c       0x84 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
-                0x08000b3c                DMA_Cmd
- .text.DMA_GetCurrDataCounter
-                0x08000bc0       0x60 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
-                0x08000bc0                DMA_GetCurrDataCounter
+                0x080009ac        0x8 system\src\newlib\assert.o
+                0x080009ac                assert_failed
+ .text.DMA_Cmd  0x080009b4       0x84 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+                0x080009b4                DMA_Cmd
+ .text.EXTI_Init
+                0x08000a38       0xcc system\src\stm32f0-stdperiph\stm32f0xx_exti.o
+                0x08000a38                EXTI_Init
+ .text.EXTI_ClearITPendingBit
+                0x08000b04       0x28 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
+                0x08000b04                EXTI_ClearITPendingBit
  .text.GPIO_Init
-                0x08000c20      0x118 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
-                0x08000c20                GPIO_Init
+                0x08000b2c      0x118 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+                0x08000b2c                GPIO_Init
+ .text.GPIO_Write
+                0x08000c44       0x54 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+                0x08000c44                GPIO_Write
  .text.GPIO_PinAFConfig
-                0x08000d38       0x94 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
-                0x08000d38                GPIO_PinAFConfig
+                0x08000c98       0x94 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+                0x08000c98                GPIO_PinAFConfig
  .text.NVIC_Init
-                0x08000dcc       0x74 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
-                0x08000dcc                NVIC_Init
- .text.RCC_GetClocksFreq
-                0x08000e40      0x1a0 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
-                0x08000e40                RCC_GetClocksFreq
+                0x08000d2c       0x74 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+                0x08000d2c                NVIC_Init
  .text.RCC_AHBPeriphClockCmd
-                0x08000fe0       0x50 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
-                0x08000fe0                RCC_AHBPeriphClockCmd
+                0x08000da0       0x50 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+                0x08000da0                RCC_AHBPeriphClockCmd
  .text.RCC_APB2PeriphClockCmd
-                0x08001030       0x50 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
-                0x08001030                RCC_APB2PeriphClockCmd
- .text.SYSCFG_DMAChannelRemapConfig
-                0x08001080       0xac system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
-                0x08001080                SYSCFG_DMAChannelRemapConfig
- .text.USART_Init
-                0x0800112c      0x1a8 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
-                0x0800112c                USART_Init
- .text.USART_Cmd
-                0x080012d4       0x64 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
-                0x080012d4                USART_Cmd
- .text.USART_DirectionModeCmd
-                0x08001338       0x78 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
-                0x08001338                USART_DirectionModeCmd
- .text.USART_MSBFirstCmd
-                0x080013b0       0x6c system\src\stm32f0-stdperiph\stm32f0xx_usart.o
-                0x080013b0                USART_MSBFirstCmd
- .text.USART_DataInvCmd
-                0x0800141c       0x6c system\src\stm32f0-stdperiph\stm32f0xx_usart.o
-                0x0800141c                USART_DataInvCmd
- .text.USART_DMACmd
-                0x08001488       0x7c system\src\stm32f0-stdperiph\stm32f0xx_usart.o
-                0x08001488                USART_DMACmd
- .text.USART_ClearFlag
-                0x08001504       0x98 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
-                0x08001504                USART_ClearFlag
- .text.USART_GetITStatus
-                0x0800159c      0x118 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
-                0x0800159c                USART_GetITStatus
- .text          0x080016b4      0x114 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_udivsi3.o)
-                0x080016b4                __aeabi_uidiv
-                0x080016b4                __udivsi3
-                0x080017c0                __aeabi_uidivmod
- .text          0x080017c8        0x4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_dvmd_tls.o)
-                0x080017c8                __aeabi_idiv0
-                0x080017c8                __aeabi_ldiv0
- .text.__errno  0x080017cc        0xc c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-errno.o)
-                0x080017cc                __errno
- .text.sprintf  0x080017d8       0x44 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sprintf.o)
-                0x080017d8                siprintf
-                0x080017d8                sprintf
+                0x08000df0       0x50 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+                0x08000df0                RCC_APB2PeriphClockCmd
+ .text.RCC_APB2PeriphResetCmd
+                0x08000e40       0x50 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+                0x08000e40                RCC_APB2PeriphResetCmd
+ .text.RCC_APB1PeriphResetCmd
+                0x08000e90       0x50 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+                0x08000e90                RCC_APB1PeriphResetCmd
+ .text.SYSCFG_EXTILineConfig
+                0x08000ee0       0x48 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+                0x08000ee0                SYSCFG_EXTILineConfig
+ .text.USART_DeInit
+                0x08000f28       0xa8 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+                0x08000f28                USART_DeInit
+ .text          0x08000fd0      0x114 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_udivsi3.o)
+                0x08000fd0                __aeabi_uidiv
+                0x08000fd0                __udivsi3
+                0x080010dc                __aeabi_uidivmod
+ .text          0x080010e4        0x4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_dvmd_tls.o)
+                0x080010e4                __aeabi_idiv0
+                0x080010e4                __aeabi_ldiv0
+ .text.__errno  0x080010e8        0xc c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-errno.o)
+                0x080010e8                __errno
+ .text.sprintf  0x080010f4       0x44 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sprintf.o)
+                0x080010f4                siprintf
+                0x080010f4                sprintf
  .text.__ssputs_r
-                0x0800181c       0xc4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
-                0x0800181c                __ssputs_r
+                0x08001138       0xc4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
+                0x08001138                __ssputs_r
  .text._svfprintf_r
-                0x080018e0      0x1fc c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
-                0x080018e0                _svfiprintf_r
-                0x080018e0                _svfprintf_r
+                0x080011fc      0x1fc c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
+                0x080011fc                _svfiprintf_r
+                0x080011fc                _svfprintf_r
  .text._printf_common
-                0x08001adc       0xdc c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
-                0x08001adc                _printf_common
+                0x080013f8       0xdc c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
+                0x080013f8                _printf_common
  .text._printf_i
-                0x08001bb8      0x244 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
-                0x08001bb8                _printf_i
- .text.memchr   0x08001dfc       0x16 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memchr-stub.o)
-                0x08001dfc                memchr
- .text.memcpy   0x08001e12       0x12 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memcpy-stub.o)
-                0x08001e12                memcpy
- .text.memmove  0x08001e24       0x2a c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memmove.o)
-                0x08001e24                memmove
- *fill*         0x08001e4e        0x2 
- .text._free_r  0x08001e50       0x8c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-freer.o)
-                0x08001e50                _free_r
+                0x080014d4      0x244 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
+                0x080014d4                _printf_i
+ .text.memchr   0x08001718       0x16 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memchr-stub.o)
+                0x08001718                memchr
+ .text.memcpy   0x0800172e       0x12 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memcpy-stub.o)
+                0x0800172e                memcpy
+ .text.memmove  0x08001740       0x2a c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memmove.o)
+                0x08001740                memmove
+ *fill*         0x0800176a        0x2 
+ .text._free_r  0x0800176c       0x8c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-freer.o)
+                0x0800176c                _free_r
  .text._malloc_r
-                0x08001edc       0xac c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
-                0x08001edc                _malloc_r
+                0x080017f8       0xac c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
+                0x080017f8                _malloc_r
  .text._realloc_r
-                0x08001f88       0x4c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-reallocr.o)
-                0x08001f88                _realloc_r
- .text._sbrk_r  0x08001fd4       0x24 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sbrkr.o)
-                0x08001fd4                _sbrk_r
+                0x080018a4       0x4c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-reallocr.o)
+                0x080018a4                _realloc_r
+ .text._sbrk_r  0x080018f0       0x24 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sbrkr.o)
+                0x080018f0                _sbrk_r
  .text._malloc_usable_size_r
-                0x08001ff8       0x16 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-msizer.o)
-                0x08001ff8                _malloc_usable_size_r
+                0x08001914       0x16 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-msizer.o)
+                0x08001914                _malloc_usable_size_r
  *(.rodata .rodata.* .constdata .constdata.*)
- *fill*         0x0800200e        0x2 
+ *fill*         0x0800192a        0x2 
  .rodata.str1.4
-                0x08002010       0x37 src\main.o
- *fill*         0x08002047        0x1 
+                0x0800192c       0x31 src\main.o
+ *fill*         0x0800195d        0x3 
  .rodata.str1.4
-                0x08002048       0x30 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+                0x08001960       0x30 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
  .rodata.str1.4
-                0x08002078       0x31 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
- *fill*         0x080020a9        0x3 
+                0x08001990       0x31 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
+ *fill*         0x080019c1        0x3 
  .rodata.str1.4
-                0x080020ac       0x31 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
- *fill*         0x080020dd        0x3 
+                0x080019c4       0x31 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+ *fill*         0x080019f5        0x3 
  .rodata.str1.4
-                0x080020e0       0x30 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+                0x080019f8       0x31 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+ *fill*         0x08001a29        0x3 
  .rodata.str1.4
-                0x08002110       0x33 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
- *fill*         0x08002143        0x1 
+                0x08001a2c       0x30 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
  .rodata.str1.4
-                0x08002144       0x34 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+                0x08001a5c       0x33 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+ *fill*         0x08001a8f        0x1 
+ .rodata.str1.4
+                0x08001a90       0x34 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
                                  0x32 (size before relaxing)
  .rodata.str1.1
-                0x08002178        0x2 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-impure.o)
+                0x08001ac4        0x2 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-impure.o)
  .rodata.str1.1
-                0x0800217a       0x11 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
+                0x08001ac6       0x11 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
  .rodata.str1.1
-                0x0800218b       0x22 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
+                0x08001ad7       0x22 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
  *(vtable)
  *(.eh_frame*)
  *(.glue_7)
- .glue_7        0x080021ad        0x0 linker stubs
+ .glue_7        0x08001af9        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x080021ad        0x0 linker stubs
+ .glue_7t       0x08001af9        0x0 linker stubs
 
-.vfp11_veneer   0x080021b0        0x0
- .vfp11_veneer  0x080021b0        0x0 linker stubs
+.vfp11_veneer   0x08001afc        0x0
+ .vfp11_veneer  0x08001afc        0x0 linker stubs
 
-.v4_bx          0x080021b0        0x0
- .v4_bx         0x080021b0        0x0 linker stubs
+.v4_bx          0x08001afc        0x0
+ .v4_bx         0x08001afc        0x0 linker stubs
 
-.iplt           0x080021b0        0x0
- .iplt          0x080021b0        0x0 src\_write.o
+.iplt           0x08001afc        0x0
+ .iplt          0x08001afc        0x0 src\_write.o
 
-.rel.dyn        0x080021b0        0x0
- .rel.iplt      0x080021b0        0x0 src\_write.o
+.rel.dyn        0x08001afc        0x0
+ .rel.iplt      0x08001afc        0x0 src\_write.o
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x080021b0                . = ALIGN (0x4)
-                0x080021b0                __exidx_start = .
+                0x08001afc                . = ALIGN (0x4)
+                0x08001afc                __exidx_start = .
 
 .ARM.exidx
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-                0x080021b0                __exidx_end = .
-                0x080021b0                . = ALIGN (0x4)
-                0x080021b0                _etext = .
-                0x080021b0                __etext = .
+                0x08001afc                __exidx_end = .
+                0x08001afc                . = ALIGN (0x4)
+                0x08001afc                _etext = .
+                0x08001afc                __etext = .
 
-.data_CCMRAM    0x00000000        0x0 load address 0x080021b0
+.data_CCMRAM    0x00000000        0x0 load address 0x08001afc
  FILL mask 0xff
  *(.data.CCMRAM .data.CCMRAM.*)
                 0x00000000                . = ALIGN (0x4)
-                0x080021b0                _sidata = LOADADDR (.data)
+                0x08001afc                _sidata = LOADADDR (.data)
 
-.data           0x20000000       0x98 load address 0x080021b0
+.data           0x20000000       0x88 load address 0x08001afc
  FILL mask 0xff
                 0x20000000                _sdata = .
                 0x20000000                __data_start__ = .
@@ -4068,49 +4057,53 @@ END GROUP
                 0x20000014                SystemCoreClock
  .data.argv.4255
                 0x20000018        0x8 system\src\newlib\_syscalls.o
- .data.APBAHBPrescTable
-                0x20000020       0x10 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
  .data.impure_data
-                0x20000030       0x60 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-impure.o)
+                0x20000020       0x60 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-impure.o)
  .data._impure_ptr
-                0x20000090        0x4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-impure.o)
-                0x20000090                _impure_ptr
+                0x20000080        0x4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-impure.o)
+                0x20000080                _impure_ptr
  *(.data_end .data_end.*)
- .data_end      0x20000094        0x4 system\src\newlib\_startup.o
-                0x20000098                . = ALIGN (0x4)
-                0x20000098                _edata = .
-                0x20000098                __data_end__ = .
+ .data_end      0x20000084        0x4 system\src\newlib\_startup.o
+                0x20000088                . = ALIGN (0x4)
+                0x20000088                _edata = .
+                0x20000088                __data_end__ = .
 
-.igot.plt       0x20000098        0x0 load address 0x08002248
- .igot.plt      0x20000098        0x0 src\_write.o
+.igot.plt       0x20000088        0x0 load address 0x08001b84
+ .igot.plt      0x20000088        0x0 src\_write.o
 
 .bss_CCMRAM     0x00000000        0x0
  *(.bss.CCMRAM .bss.CCMRAM.*)
 
-.bss            0x20000098       0x48
-                0x20000098                __bss_start__ = .
-                0x20000098                _sbss = .
+.bss            0x20000088       0x58
+                0x20000088                __bss_start__ = .
+                0x20000088                _sbss = .
  *(.bss_begin .bss_begin.*)
- .bss_begin     0x20000098        0x4 system\src\newlib\_startup.o
+ .bss_begin     0x20000088        0x4 system\src\newlib\_startup.o
  *(.bss .bss.*)
- .bss.RxBuffer  0x2000009c       0x1a src\main.o
-                0x2000009c                RxBuffer
- .bss.temp      0x200000b6        0x2 src\main.o
-                0x200000b6                temp
+ .bss.y         0x2000008c        0x4 src\main.o
+                0x2000008c                y
  .bss.current_heap_end.3946
-                0x200000b8        0x4 system\src\newlib\_sbrk.o
+                0x20000090        0x4 system\src\newlib\_sbrk.o
  .bss.name.4254
-                0x200000bc        0x1 system\src\newlib\_syscalls.o
- *fill*         0x200000bd        0x3 
+                0x20000094        0x1 system\src\newlib\_syscalls.o
+ *fill*         0x20000095        0x3 
  .bss.__malloc_sbrk_start
-                0x200000c0        0x4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
-                0x200000c0                __malloc_sbrk_start
+                0x20000098        0x4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
+                0x20000098                __malloc_sbrk_start
  .bss.__malloc_free_list
-                0x200000c4        0x4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
-                0x200000c4                __malloc_free_list
+                0x2000009c        0x4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
+                0x2000009c                __malloc_free_list
  *(COMMON)
- COMMON         0x200000c8       0x10 src\main.o
-                0x200000c8                lcdstring
+ COMMON         0x200000a0       0x36 src\main.o
+                0x200000a0                ch3
+                0x200000a2                ch2
+                0x200000a4                ch4
+                0x200000a6                ch5
+                0x200000a8                lcdstring
+                0x200000b8                ch6
+                0x200000bc                RxBuffer
+                0x200000d4                ch1
+ *fill*         0x200000d6        0x2 
  COMMON         0x200000d8        0x4 system\src\newlib\_syscalls.o
                 0x200000d8                errno
  *(.bss_end .bss_end.*)
@@ -4194,6 +4187,7 @@ END GROUP
  .comment       0x0000006e       0x6f system\src\newlib\_syscalls.o
  .comment       0x0000006e       0x6f system\src\newlib\assert.o
  .comment       0x0000006e       0x6f system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+ .comment       0x0000006e       0x6f system\src\stm32f0-stdperiph\stm32f0xx_exti.o
  .comment       0x0000006e       0x6f system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
  .comment       0x0000006e       0x6f system\src\stm32f0-stdperiph\stm32f0xx_misc.o
  .comment       0x0000006e       0x6f system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
@@ -4227,45 +4221,47 @@ END GROUP
  .ARM.attributes
                 0x0000021b       0x31 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
  .ARM.attributes
-                0x0000024c       0x31 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+                0x0000024c       0x31 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
  .ARM.attributes
-                0x0000027d       0x31 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+                0x0000027d       0x31 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
  .ARM.attributes
-                0x000002ae       0x31 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+                0x000002ae       0x31 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
  .ARM.attributes
-                0x000002df       0x31 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+                0x000002df       0x31 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
  .ARM.attributes
-                0x00000310       0x31 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+                0x00000310       0x31 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
  .ARM.attributes
-                0x00000341       0x1e c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_udivsi3.o)
+                0x00000341       0x31 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
  .ARM.attributes
-                0x0000035f       0x1e c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_dvmd_tls.o)
+                0x00000372       0x1e c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_udivsi3.o)
  .ARM.attributes
-                0x0000037d       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-errno.o)
+                0x00000390       0x1e c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_dvmd_tls.o)
  .ARM.attributes
-                0x000003a9       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-impure.o)
+                0x000003ae       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-errno.o)
  .ARM.attributes
-                0x000003d5       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sprintf.o)
+                0x000003da       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-impure.o)
  .ARM.attributes
-                0x00000401       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
+                0x00000406       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sprintf.o)
  .ARM.attributes
-                0x0000042d       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
+                0x00000432       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
  .ARM.attributes
-                0x00000459       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memchr-stub.o)
+                0x0000045e       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
  .ARM.attributes
-                0x00000485       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memcpy-stub.o)
+                0x0000048a       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memchr-stub.o)
  .ARM.attributes
-                0x000004b1       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memmove.o)
+                0x000004b6       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memcpy-stub.o)
  .ARM.attributes
-                0x000004dd       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-freer.o)
+                0x000004e2       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memmove.o)
  .ARM.attributes
-                0x00000509       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
+                0x0000050e       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-freer.o)
  .ARM.attributes
-                0x00000535       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-reallocr.o)
+                0x0000053a       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
  .ARM.attributes
-                0x00000561       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sbrkr.o)
+                0x00000566       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-reallocr.o)
  .ARM.attributes
-                0x0000058d       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-msizer.o)
+                0x00000592       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sbrkr.o)
+ .ARM.attributes
+                0x000005be       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-msizer.o)
 
 .debug
  *(.debug)
@@ -4279,191 +4275,200 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x6b8
+.debug_aranges  0x00000000      0x708
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x48 src\lcd_stm32f0.o
  .debug_aranges
-                0x00000048       0x50 src\main.o
+                0x00000048       0x48 src\main.o
  .debug_aranges
-                0x00000098       0x30 system\src\cmsis\system_stm32f0xx.o
+                0x00000090       0x30 system\src\cmsis\system_stm32f0xx.o
  .debug_aranges
-                0x000000c8       0x20 system\src\cmsis\vectors_stm32f0xx.o
+                0x000000c0       0x20 system\src\cmsis\vectors_stm32f0xx.o
  .debug_aranges
-                0x000000e8       0x28 system\src\cortexm\_initialize_hardware.o
+                0x000000e0       0x28 system\src\cortexm\_initialize_hardware.o
  .debug_aranges
-                0x00000110       0x50 system\src\cortexm\exception_handlers.o
+                0x00000108       0x50 system\src\cortexm\exception_handlers.o
  .debug_aranges
-                0x00000160       0x28 system\src\newlib\_exit.o
+                0x00000158       0x28 system\src\newlib\_exit.o
  .debug_aranges
-                0x00000188       0x20 system\src\newlib\_sbrk.o
+                0x00000180       0x20 system\src\newlib\_sbrk.o
  .debug_aranges
-                0x000001a8       0x40 system\src\newlib\_startup.o
+                0x000001a0       0x40 system\src\newlib\_startup.o
  .debug_aranges
-                0x000001e8       0x30 system\src\newlib\_syscalls.o
+                0x000001e0       0x30 system\src\newlib\_syscalls.o
  .debug_aranges
-                0x00000218       0x28 system\src\newlib\assert.o
+                0x00000210       0x28 system\src\newlib\assert.o
  .debug_aranges
-                0x00000240       0x70 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+                0x00000238       0x70 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
  .debug_aranges
-                0x000002b0       0x80 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+                0x000002a8       0x58 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
  .debug_aranges
-                0x00000330       0x30 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+                0x00000300       0x80 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
  .debug_aranges
-                0x00000360      0x160 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+                0x00000380       0x30 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
  .debug_aranges
-                0x000004c0       0x58 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+                0x000003b0      0x160 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
  .debug_aranges
-                0x00000518      0x1a0 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+                0x00000510       0x58 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+ .debug_aranges
+                0x00000568      0x1a0 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x61ab
+.debug_info     0x00000000     0x6511
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x41b src\lcd_stm32f0.o
- .debug_info    0x0000041b      0xb54 src\main.o
- .debug_info    0x00000f6f      0x2f6 system\src\cmsis\system_stm32f0xx.o
- .debug_info    0x00001265       0xd1 system\src\cmsis\vectors_stm32f0xx.o
- .debug_info    0x00001336       0xcb system\src\cortexm\_initialize_hardware.o
- .debug_info    0x00001401      0x1c4 system\src\cortexm\exception_handlers.o
- .debug_info    0x000015c5       0xee system\src\newlib\_exit.o
- .debug_info    0x000016b3      0x11f system\src\newlib\_sbrk.o
- .debug_info    0x000017d2      0x454 system\src\newlib\_startup.o
- .debug_info    0x00001c26      0x1bc system\src\newlib\_syscalls.o
- .debug_info    0x00001de2      0x16c system\src\newlib\assert.o
- .debug_info    0x00001f4e      0x6b0 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
- .debug_info    0x000025fe      0xa0b system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
- .debug_info    0x00003009      0x3f9 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
- .debug_info    0x00003402      0xf1d system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
- .debug_info    0x0000431f      0x3c8 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
- .debug_info    0x000046e7     0x1ac4 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .debug_info    0x0000041b      0xa84 src\main.o
+ .debug_info    0x00000e9f      0x2f6 system\src\cmsis\system_stm32f0xx.o
+ .debug_info    0x00001195       0xd1 system\src\cmsis\vectors_stm32f0xx.o
+ .debug_info    0x00001266       0xcb system\src\cortexm\_initialize_hardware.o
+ .debug_info    0x00001331      0x1c4 system\src\cortexm\exception_handlers.o
+ .debug_info    0x000014f5       0xee system\src\newlib\_exit.o
+ .debug_info    0x000015e3      0x11f system\src\newlib\_sbrk.o
+ .debug_info    0x00001702      0x454 system\src\newlib\_startup.o
+ .debug_info    0x00001b56      0x1bc system\src\newlib\_syscalls.o
+ .debug_info    0x00001d12      0x16c system\src\newlib\assert.o
+ .debug_info    0x00001e7e      0x6b0 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+ .debug_info    0x0000252e      0x436 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
+ .debug_info    0x00002964      0xa0b system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+ .debug_info    0x0000336f      0x3f9 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+ .debug_info    0x00003768      0xf1d system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+ .debug_info    0x00004685      0x3c8 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+ .debug_info    0x00004a4d     0x1ac4 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
 
-.debug_abbrev   0x00000000     0x1555
+.debug_abbrev   0x00000000     0x174e
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x14b src\lcd_stm32f0.o
- .debug_abbrev  0x0000014b      0x1aa src\main.o
- .debug_abbrev  0x000002f5      0x148 system\src\cmsis\system_stm32f0xx.o
- .debug_abbrev  0x0000043d       0x9d system\src\cmsis\vectors_stm32f0xx.o
- .debug_abbrev  0x000004da       0x63 system\src\cortexm\_initialize_hardware.o
- .debug_abbrev  0x0000053d      0x100 system\src\cortexm\exception_handlers.o
- .debug_abbrev  0x0000063d       0xbd system\src\newlib\_exit.o
- .debug_abbrev  0x000006fa       0xb9 system\src\newlib\_sbrk.o
- .debug_abbrev  0x000007b3      0x1ac system\src\newlib\_startup.o
- .debug_abbrev  0x0000095f       0xec system\src\newlib\_syscalls.o
- .debug_abbrev  0x00000a4b       0xb9 system\src\newlib\assert.o
- .debug_abbrev  0x00000b04      0x18f system\src\stm32f0-stdperiph\stm32f0xx_dma.o
- .debug_abbrev  0x00000c93      0x1d6 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
- .debug_abbrev  0x00000e69      0x167 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
- .debug_abbrev  0x00000fd0      0x237 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
- .debug_abbrev  0x00001207      0x185 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
- .debug_abbrev  0x0000138c      0x1c9 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .debug_abbrev  0x0000014b      0x1c2 src\main.o
+ .debug_abbrev  0x0000030d      0x148 system\src\cmsis\system_stm32f0xx.o
+ .debug_abbrev  0x00000455       0x9d system\src\cmsis\vectors_stm32f0xx.o
+ .debug_abbrev  0x000004f2       0x63 system\src\cortexm\_initialize_hardware.o
+ .debug_abbrev  0x00000555      0x100 system\src\cortexm\exception_handlers.o
+ .debug_abbrev  0x00000655       0xbd system\src\newlib\_exit.o
+ .debug_abbrev  0x00000712       0xb9 system\src\newlib\_sbrk.o
+ .debug_abbrev  0x000007cb      0x1ac system\src\newlib\_startup.o
+ .debug_abbrev  0x00000977       0xec system\src\newlib\_syscalls.o
+ .debug_abbrev  0x00000a63       0xb9 system\src\newlib\assert.o
+ .debug_abbrev  0x00000b1c      0x18f system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+ .debug_abbrev  0x00000cab      0x1e1 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
+ .debug_abbrev  0x00000e8c      0x1d6 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+ .debug_abbrev  0x00001062      0x167 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+ .debug_abbrev  0x000011c9      0x237 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+ .debug_abbrev  0x00001400      0x185 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+ .debug_abbrev  0x00001585      0x1c9 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
 
-.debug_line     0x00000000     0x5899
+.debug_line     0x00000000     0x5e01
  *(.debug_line)
  .debug_line    0x00000000      0x41f src\lcd_stm32f0.o
- .debug_line    0x0000041f      0x647 src\main.o
- .debug_line    0x00000a66      0x3c0 system\src\cmsis\system_stm32f0xx.o
- .debug_line    0x00000e26      0x103 system\src\cmsis\vectors_stm32f0xx.o
- .debug_line    0x00000f29      0x382 system\src\cortexm\_initialize_hardware.o
- .debug_line    0x000012ab      0x63c system\src\cortexm\exception_handlers.o
- .debug_line    0x000018e7      0x322 system\src\newlib\_exit.o
- .debug_line    0x00001c09      0x2d4 system\src\newlib\_sbrk.o
- .debug_line    0x00001edd      0x38b system\src\newlib\_startup.o
- .debug_line    0x00002268      0x3d9 system\src\newlib\_syscalls.o
- .debug_line    0x00002641      0x34b system\src\newlib\assert.o
- .debug_line    0x0000298c      0x6f6 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
- .debug_line    0x00003082      0x740 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
- .debug_line    0x000037c2      0x3c6 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
- .debug_line    0x00003b88      0x9df system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
- .debug_line    0x00004567      0x4b4 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
- .debug_line    0x00004a1b      0xe7e system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .debug_line    0x0000041f      0x649 src\main.o
+ .debug_line    0x00000a68      0x3c0 system\src\cmsis\system_stm32f0xx.o
+ .debug_line    0x00000e28      0x103 system\src\cmsis\vectors_stm32f0xx.o
+ .debug_line    0x00000f2b      0x382 system\src\cortexm\_initialize_hardware.o
+ .debug_line    0x000012ad      0x63c system\src\cortexm\exception_handlers.o
+ .debug_line    0x000018e9      0x322 system\src\newlib\_exit.o
+ .debug_line    0x00001c0b      0x2d4 system\src\newlib\_sbrk.o
+ .debug_line    0x00001edf      0x38b system\src\newlib\_startup.o
+ .debug_line    0x0000226a      0x3d9 system\src\newlib\_syscalls.o
+ .debug_line    0x00002643      0x34b system\src\newlib\assert.o
+ .debug_line    0x0000298e      0x6f6 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+ .debug_line    0x00003084      0x566 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
+ .debug_line    0x000035ea      0x740 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+ .debug_line    0x00003d2a      0x3c6 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+ .debug_line    0x000040f0      0x9df system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+ .debug_line    0x00004acf      0x4b4 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+ .debug_line    0x00004f83      0xe7e system\src\stm32f0-stdperiph\stm32f0xx_usart.o
 
-.debug_frame    0x00000000     0x13b4
+.debug_frame    0x00000000     0x1454
  *(.debug_frame)
  .debug_frame   0x00000000       0xa4 src\lcd_stm32f0.o
- .debug_frame   0x000000a4       0xc8 src\main.o
- .debug_frame   0x0000016c       0x54 system\src\cmsis\system_stm32f0xx.o
- .debug_frame   0x000001c0       0x20 system\src\cmsis\vectors_stm32f0xx.o
- .debug_frame   0x000001e0       0x40 system\src\cortexm\_initialize_hardware.o
- .debug_frame   0x00000220       0x88 system\src\cortexm\exception_handlers.o
- .debug_frame   0x000002a8       0x38 system\src\newlib\_exit.o
- .debug_frame   0x000002e0       0x28 system\src\newlib\_sbrk.o
- .debug_frame   0x00000308       0x80 system\src\newlib\_startup.o
- .debug_frame   0x00000388       0x50 system\src\newlib\_syscalls.o
- .debug_frame   0x000003d8       0x40 system\src\newlib\assert.o
- .debug_frame   0x00000418      0x120 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
- .debug_frame   0x00000538      0x164 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
- .debug_frame   0x0000069c       0x60 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
- .debug_frame   0x000006fc      0x3f8 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
- .debug_frame   0x00000af4       0xd4 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
- .debug_frame   0x00000bc8      0x550 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
- .debug_frame   0x00001118       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_udivsi3.o)
- .debug_frame   0x00001138       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-errno.o)
- .debug_frame   0x00001158       0x50 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sprintf.o)
- .debug_frame   0x000011a8       0x74 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
- .debug_frame   0x0000121c       0x54 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
- .debug_frame   0x00001270       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memchr-stub.o)
- .debug_frame   0x00001290       0x28 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memcpy-stub.o)
- .debug_frame   0x000012b8       0x28 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memmove.o)
- .debug_frame   0x000012e0       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-freer.o)
- .debug_frame   0x0000130c       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
- .debug_frame   0x00001338       0x30 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-reallocr.o)
- .debug_frame   0x00001368       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sbrkr.o)
- .debug_frame   0x00001394       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-msizer.o)
+ .debug_frame   0x000000a4       0xa8 src\main.o
+ .debug_frame   0x0000014c       0x54 system\src\cmsis\system_stm32f0xx.o
+ .debug_frame   0x000001a0       0x20 system\src\cmsis\vectors_stm32f0xx.o
+ .debug_frame   0x000001c0       0x40 system\src\cortexm\_initialize_hardware.o
+ .debug_frame   0x00000200       0x88 system\src\cortexm\exception_handlers.o
+ .debug_frame   0x00000288       0x38 system\src\newlib\_exit.o
+ .debug_frame   0x000002c0       0x28 system\src\newlib\_sbrk.o
+ .debug_frame   0x000002e8       0x80 system\src\newlib\_startup.o
+ .debug_frame   0x00000368       0x50 system\src\newlib\_syscalls.o
+ .debug_frame   0x000003b8       0x40 system\src\newlib\assert.o
+ .debug_frame   0x000003f8      0x120 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+ .debug_frame   0x00000518       0xc0 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
+ .debug_frame   0x000005d8      0x164 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+ .debug_frame   0x0000073c       0x60 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+ .debug_frame   0x0000079c      0x3f8 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+ .debug_frame   0x00000b94       0xd4 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+ .debug_frame   0x00000c68      0x550 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .debug_frame   0x000011b8       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_udivsi3.o)
+ .debug_frame   0x000011d8       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-errno.o)
+ .debug_frame   0x000011f8       0x50 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sprintf.o)
+ .debug_frame   0x00001248       0x74 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
+ .debug_frame   0x000012bc       0x54 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
+ .debug_frame   0x00001310       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memchr-stub.o)
+ .debug_frame   0x00001330       0x28 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memcpy-stub.o)
+ .debug_frame   0x00001358       0x28 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memmove.o)
+ .debug_frame   0x00001380       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-freer.o)
+ .debug_frame   0x000013ac       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
+ .debug_frame   0x000013d8       0x30 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-reallocr.o)
+ .debug_frame   0x00001408       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sbrkr.o)
+ .debug_frame   0x00001434       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-msizer.o)
 
-.debug_str      0x00000000    0x471c7
+.debug_str      0x00000000    0x47362
  *(.debug_str)
  .debug_str     0x00000000    0x3f26f src\lcd_stm32f0.o
                               0x3f3f1 (size before relaxing)
- .debug_str     0x0003f26f     0x4194 src\main.o
-                              0x435ef (size before relaxing)
- .debug_str     0x00043403       0xc1 system\src\cmsis\system_stm32f0xx.o
+ .debug_str     0x0003f26f     0x408e src\main.o
+                              0x434e9 (size before relaxing)
+ .debug_str     0x000432fd       0xc1 system\src\cmsis\system_stm32f0xx.o
                               0x3f115 (size before relaxing)
- .debug_str     0x000434c4       0x9c system\src\cmsis\vectors_stm32f0xx.o
+ .debug_str     0x000433be       0x9c system\src\cmsis\vectors_stm32f0xx.o
                                0x2edd (size before relaxing)
- .debug_str     0x00043560       0x78 system\src\cortexm\_initialize_hardware.o
+ .debug_str     0x0004345a       0x78 system\src\cortexm\_initialize_hardware.o
                               0x3f067 (size before relaxing)
- .debug_str     0x000435d8     0x10b4 system\src\cortexm\exception_handlers.o
+ .debug_str     0x000434d2     0x10b4 system\src\cortexm\exception_handlers.o
                               0x435b1 (size before relaxing)
- .debug_str     0x0004468c      0x11b system\src\newlib\_exit.o
+ .debug_str     0x00044586      0x11b system\src\newlib\_exit.o
                                0x6979 (size before relaxing)
- .debug_str     0x000447a7      0x4de system\src\newlib\_sbrk.o
+ .debug_str     0x000446a1      0x4de system\src\newlib\_sbrk.o
                                0x5d64 (size before relaxing)
- .debug_str     0x00044c85      0x229 system\src\newlib\_startup.o
+ .debug_str     0x00044b7f      0x229 system\src\newlib\_startup.o
                                0x58ff (size before relaxing)
- .debug_str     0x00044eae      0xe06 system\src\newlib\_syscalls.o
+ .debug_str     0x00044da8      0xe06 system\src\newlib\_syscalls.o
                                0x6bac (size before relaxing)
- .debug_str     0x00045cb4       0xea system\src\newlib\assert.o
+ .debug_str     0x00045bae       0xea system\src\newlib\assert.o
                                0x7489 (size before relaxing)
- .debug_str     0x00045d9e      0x3e4 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+ .debug_str     0x00045c98      0x4bd system\src\stm32f0-stdperiph\stm32f0xx_dma.o
                               0x3f518 (size before relaxing)
- .debug_str     0x00046182      0x16a system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+ .debug_str     0x00046155       0xe8 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
+                              0x3f20f (size before relaxing)
+ .debug_str     0x0004623d      0x15f system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
                               0x3f33a (size before relaxing)
- .debug_str     0x000462ec       0xf7 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+ .debug_str     0x0004639c       0xf7 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
                               0x3f199 (size before relaxing)
- .debug_str     0x000463e3      0x587 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+ .debug_str     0x00046493      0x587 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
                               0x3f6d0 (size before relaxing)
- .debug_str     0x0004696a      0x162 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+ .debug_str     0x00046a1a      0x169 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
                               0x3f1be (size before relaxing)
- .debug_str     0x00046acc      0x6fb system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .debug_str     0x00046b83      0x7df system\src\stm32f0-stdperiph\stm32f0xx_usart.o
                               0x3f978 (size before relaxing)
 
-.debug_loc      0x00000000     0x30b7
+.debug_loc      0x00000000     0x3290
  *(.debug_loc)
  .debug_loc     0x00000000       0xb6 src\lcd_stm32f0.o
- .debug_loc     0x000000b6       0x2a src\main.o
- .debug_loc     0x000000e0       0xee system\src\cmsis\system_stm32f0xx.o
- .debug_loc     0x000001ce       0x7b system\src\newlib\_sbrk.o
- .debug_loc     0x00000249      0x265 system\src\newlib\_startup.o
- .debug_loc     0x000004ae       0x63 system\src\newlib\_syscalls.o
- .debug_loc     0x00000511       0xc6 system\src\newlib\assert.o
- .debug_loc     0x000005d7      0x30c system\src\stm32f0-stdperiph\stm32f0xx_dma.o
- .debug_loc     0x000008e3      0x51a system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
- .debug_loc     0x00000dfd       0xdf system\src\stm32f0-stdperiph\stm32f0xx_misc.o
- .debug_loc     0x00000edc      0xbd9 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
- .debug_loc     0x00001ab5      0x21f system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
- .debug_loc     0x00001cd4     0x13e3 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .debug_loc     0x000000b6       0x5c src\main.o
+ .debug_loc     0x00000112       0xee system\src\cmsis\system_stm32f0xx.o
+ .debug_loc     0x00000200       0x7b system\src\newlib\_sbrk.o
+ .debug_loc     0x0000027b      0x265 system\src\newlib\_startup.o
+ .debug_loc     0x000004e0       0x63 system\src\newlib\_syscalls.o
+ .debug_loc     0x00000543       0xc6 system\src\newlib\assert.o
+ .debug_loc     0x00000609      0x30c system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+ .debug_loc     0x00000915      0x1a7 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
+ .debug_loc     0x00000abc      0x51a system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+ .debug_loc     0x00000fd6       0xdf system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+ .debug_loc     0x000010b5      0xbd9 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+ .debug_loc     0x00001c8e      0x21f system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+ .debug_loc     0x00001ead     0x13e3 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -4481,26 +4486,27 @@ END GROUP
  *(.debug_varnames)
 OUTPUT(USARTDMA.elf elf32-littlearm)
 
-.debug_ranges   0x00000000      0x5c0
+.debug_ranges   0x00000000      0x618
  .debug_ranges  0x00000000       0x38 src\lcd_stm32f0.o
- .debug_ranges  0x00000038       0x40 src\main.o
- .debug_ranges  0x00000078       0x20 system\src\cmsis\system_stm32f0xx.o
- .debug_ranges  0x00000098       0x10 system\src\cmsis\vectors_stm32f0xx.o
- .debug_ranges  0x000000a8       0x18 system\src\cortexm\_initialize_hardware.o
- .debug_ranges  0x000000c0       0x40 system\src\cortexm\exception_handlers.o
- .debug_ranges  0x00000100       0x18 system\src\newlib\_exit.o
- .debug_ranges  0x00000118       0x10 system\src\newlib\_sbrk.o
- .debug_ranges  0x00000128       0x48 system\src\newlib\_startup.o
- .debug_ranges  0x00000170       0x20 system\src\newlib\_syscalls.o
- .debug_ranges  0x00000190       0x18 system\src\newlib\assert.o
- .debug_ranges  0x000001a8       0x60 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
- .debug_ranges  0x00000208       0x70 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
- .debug_ranges  0x00000278       0x20 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
- .debug_ranges  0x00000298      0x150 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
- .debug_ranges  0x000003e8       0x48 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
- .debug_ranges  0x00000430      0x190 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .debug_ranges  0x00000038       0x50 src\main.o
+ .debug_ranges  0x00000088       0x20 system\src\cmsis\system_stm32f0xx.o
+ .debug_ranges  0x000000a8       0x10 system\src\cmsis\vectors_stm32f0xx.o
+ .debug_ranges  0x000000b8       0x18 system\src\cortexm\_initialize_hardware.o
+ .debug_ranges  0x000000d0       0x40 system\src\cortexm\exception_handlers.o
+ .debug_ranges  0x00000110       0x18 system\src\newlib\_exit.o
+ .debug_ranges  0x00000128       0x10 system\src\newlib\_sbrk.o
+ .debug_ranges  0x00000138       0x48 system\src\newlib\_startup.o
+ .debug_ranges  0x00000180       0x20 system\src\newlib\_syscalls.o
+ .debug_ranges  0x000001a0       0x18 system\src\newlib\assert.o
+ .debug_ranges  0x000001b8       0x60 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+ .debug_ranges  0x00000218       0x48 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
+ .debug_ranges  0x00000260       0x70 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+ .debug_ranges  0x000002d0       0x20 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+ .debug_ranges  0x000002f0      0x150 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+ .debug_ranges  0x00000440       0x48 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+ .debug_ranges  0x00000488      0x190 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
 
-.debug_macro    0x00000000     0xda4f
+.debug_macro    0x00000000     0xdc7f
  .debug_macro   0x00000000      0x16a src\lcd_stm32f0.o
  .debug_macro   0x0000016a       0x7a src\lcd_stm32f0.o
  .debug_macro   0x000001e4      0x34e src\lcd_stm32f0.o
@@ -4532,74 +4538,76 @@ OUTPUT(USARTDMA.elf elf32-littlearm)
  .debug_macro   0x00009515       0x34 src\lcd_stm32f0.o
  .debug_macro   0x00009549       0x3a src\lcd_stm32f0.o
  .debug_macro   0x00009583       0x82 src\lcd_stm32f0.o
- .debug_macro   0x00009605      0x2c3 src\main.o
- .debug_macro   0x000098c8       0x22 src\main.o
- .debug_macro   0x000098ea       0x4c src\main.o
- .debug_macro   0x00009936       0x8d src\main.o
- .debug_macro   0x000099c3       0x35 src\main.o
- .debug_macro   0x000099f8       0x9c src\main.o
- .debug_macro   0x00009a94       0x16 src\main.o
- .debug_macro   0x00009aaa       0x4a src\main.o
- .debug_macro   0x00009af4       0x97 src\main.o
- .debug_macro   0x00009b8b      0x30d src\main.o
- .debug_macro   0x00009e98       0xfd src\main.o
- .debug_macro   0x00009f95       0x10 src\main.o
- .debug_macro   0x00009fa5       0x52 src\main.o
- .debug_macro   0x00009ff7       0x16 src\main.o
- .debug_macro   0x0000a00d       0x43 src\main.o
- .debug_macro   0x0000a050      0x187 src\main.o
- .debug_macro   0x0000a1d7       0x22 src\main.o
- .debug_macro   0x0000a1f9       0x22 src\main.o
- .debug_macro   0x0000a21b       0x3a src\main.o
- .debug_macro   0x0000a255       0x10 src\main.o
- .debug_macro   0x0000a265       0x40 src\main.o
- .debug_macro   0x0000a2a5       0x6c src\main.o
- .debug_macro   0x0000a311       0x16 src\main.o
- .debug_macro   0x0000a327      0x182 src\main.o
- .debug_macro   0x0000a4a9      0x15b system\src\cmsis\system_stm32f0xx.o
- .debug_macro   0x0000a604       0x34 system\src\cmsis\vectors_stm32f0xx.o
- .debug_macro   0x0000a638      0x165 system\src\cortexm\_initialize_hardware.o
- .debug_macro   0x0000a79d      0x2d8 system\src\cortexm\exception_handlers.o
- .debug_macro   0x0000aa75       0x3b system\src\cortexm\exception_handlers.o
- .debug_macro   0x0000aab0       0x22 system\src\cortexm\exception_handlers.o
- .debug_macro   0x0000aad2       0x10 system\src\cortexm\exception_handlers.o
- .debug_macro   0x0000aae2       0xcf system\src\cortexm\exception_handlers.o
- .debug_macro   0x0000abb1       0x19 system\src\cortexm\exception_handlers.o
- .debug_macro   0x0000abca       0xbe system\src\cortexm\exception_handlers.o
- .debug_macro   0x0000ac88      0x513 system\src\cortexm\exception_handlers.o
- .debug_macro   0x0000b19b       0x10 system\src\cortexm\exception_handlers.o
- .debug_macro   0x0000b1ab       0x35 system\src\cortexm\exception_handlers.o
- .debug_macro   0x0000b1e0      0x182 system\src\newlib\_exit.o
- .debug_macro   0x0000b362      0x10e system\src\newlib\_exit.o
- .debug_macro   0x0000b470       0x8d system\src\newlib\_exit.o
- .debug_macro   0x0000b4fd      0x137 system\src\newlib\_sbrk.o
- .debug_macro   0x0000b634      0x174 system\src\newlib\_sbrk.o
- .debug_macro   0x0000b7a8       0x10 system\src\newlib\_sbrk.o
- .debug_macro   0x0000b7b8      0x23b system\src\newlib\_sbrk.o
- .debug_macro   0x0000b9f3      0x141 system\src\newlib\_startup.o
- .debug_macro   0x0000bb34      0x1d6 system\src\newlib\_syscalls.o
- .debug_macro   0x0000bd0a       0x1c system\src\newlib\_syscalls.o
- .debug_macro   0x0000bd26       0x10 system\src\newlib\_syscalls.o
- .debug_macro   0x0000bd36       0x10 system\src\newlib\_syscalls.o
- .debug_macro   0x0000bd46       0x10 system\src\newlib\_syscalls.o
- .debug_macro   0x0000bd56       0x35 system\src\newlib\_syscalls.o
- .debug_macro   0x0000bd8b      0x122 system\src\newlib\_syscalls.o
- .debug_macro   0x0000bead       0x88 system\src\newlib\_syscalls.o
- .debug_macro   0x0000bf35       0x2b system\src\newlib\_syscalls.o
- .debug_macro   0x0000bf60      0x118 system\src\newlib\_syscalls.o
- .debug_macro   0x0000c078      0x159 system\src\newlib\_syscalls.o
- .debug_macro   0x0000c1d1       0x16 system\src\newlib\_syscalls.o
- .debug_macro   0x0000c1e7      0x19e system\src\newlib\assert.o
- .debug_macro   0x0000c385       0x1c system\src\newlib\assert.o
- .debug_macro   0x0000c3a1      0x195 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
- .debug_macro   0x0000c536      0x28f system\src\stm32f0-stdperiph\stm32f0xx_dma.o
- .debug_macro   0x0000c7c5      0x165 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
- .debug_macro   0x0000c92a      0x17f system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
- .debug_macro   0x0000caa9      0x165 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
- .debug_macro   0x0000cc0e       0x34 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
- .debug_macro   0x0000cc42      0x183 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
- .debug_macro   0x0000cdc5      0x4dd system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
- .debug_macro   0x0000d2a2      0x165 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
- .debug_macro   0x0000d407      0x17e system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
- .debug_macro   0x0000d585      0x17d system\src\stm32f0-stdperiph\stm32f0xx_usart.o
- .debug_macro   0x0000d702      0x34d system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .debug_macro   0x00009605      0x2b7 src\main.o
+ .debug_macro   0x000098bc       0x22 src\main.o
+ .debug_macro   0x000098de       0x4c src\main.o
+ .debug_macro   0x0000992a       0x8d src\main.o
+ .debug_macro   0x000099b7       0x35 src\main.o
+ .debug_macro   0x000099ec       0x9c src\main.o
+ .debug_macro   0x00009a88       0x16 src\main.o
+ .debug_macro   0x00009a9e       0x4a src\main.o
+ .debug_macro   0x00009ae8       0x97 src\main.o
+ .debug_macro   0x00009b7f      0x30d src\main.o
+ .debug_macro   0x00009e8c       0xfd src\main.o
+ .debug_macro   0x00009f89       0x10 src\main.o
+ .debug_macro   0x00009f99       0x52 src\main.o
+ .debug_macro   0x00009feb       0x16 src\main.o
+ .debug_macro   0x0000a001       0x43 src\main.o
+ .debug_macro   0x0000a044      0x187 src\main.o
+ .debug_macro   0x0000a1cb       0x22 src\main.o
+ .debug_macro   0x0000a1ed       0x22 src\main.o
+ .debug_macro   0x0000a20f       0x3a src\main.o
+ .debug_macro   0x0000a249       0x10 src\main.o
+ .debug_macro   0x0000a259       0x40 src\main.o
+ .debug_macro   0x0000a299       0x6c src\main.o
+ .debug_macro   0x0000a305       0x16 src\main.o
+ .debug_macro   0x0000a31b      0x182 src\main.o
+ .debug_macro   0x0000a49d      0x15b system\src\cmsis\system_stm32f0xx.o
+ .debug_macro   0x0000a5f8       0x34 system\src\cmsis\vectors_stm32f0xx.o
+ .debug_macro   0x0000a62c      0x165 system\src\cortexm\_initialize_hardware.o
+ .debug_macro   0x0000a791      0x2d8 system\src\cortexm\exception_handlers.o
+ .debug_macro   0x0000aa69       0x3b system\src\cortexm\exception_handlers.o
+ .debug_macro   0x0000aaa4       0x22 system\src\cortexm\exception_handlers.o
+ .debug_macro   0x0000aac6       0x10 system\src\cortexm\exception_handlers.o
+ .debug_macro   0x0000aad6       0xcf system\src\cortexm\exception_handlers.o
+ .debug_macro   0x0000aba5       0x19 system\src\cortexm\exception_handlers.o
+ .debug_macro   0x0000abbe       0xbe system\src\cortexm\exception_handlers.o
+ .debug_macro   0x0000ac7c      0x513 system\src\cortexm\exception_handlers.o
+ .debug_macro   0x0000b18f       0x10 system\src\cortexm\exception_handlers.o
+ .debug_macro   0x0000b19f       0x35 system\src\cortexm\exception_handlers.o
+ .debug_macro   0x0000b1d4      0x182 system\src\newlib\_exit.o
+ .debug_macro   0x0000b356      0x10e system\src\newlib\_exit.o
+ .debug_macro   0x0000b464       0x8d system\src\newlib\_exit.o
+ .debug_macro   0x0000b4f1      0x137 system\src\newlib\_sbrk.o
+ .debug_macro   0x0000b628      0x174 system\src\newlib\_sbrk.o
+ .debug_macro   0x0000b79c       0x10 system\src\newlib\_sbrk.o
+ .debug_macro   0x0000b7ac      0x23b system\src\newlib\_sbrk.o
+ .debug_macro   0x0000b9e7      0x141 system\src\newlib\_startup.o
+ .debug_macro   0x0000bb28      0x1d6 system\src\newlib\_syscalls.o
+ .debug_macro   0x0000bcfe       0x1c system\src\newlib\_syscalls.o
+ .debug_macro   0x0000bd1a       0x10 system\src\newlib\_syscalls.o
+ .debug_macro   0x0000bd2a       0x10 system\src\newlib\_syscalls.o
+ .debug_macro   0x0000bd3a       0x10 system\src\newlib\_syscalls.o
+ .debug_macro   0x0000bd4a       0x35 system\src\newlib\_syscalls.o
+ .debug_macro   0x0000bd7f      0x122 system\src\newlib\_syscalls.o
+ .debug_macro   0x0000bea1       0x88 system\src\newlib\_syscalls.o
+ .debug_macro   0x0000bf29       0x2b system\src\newlib\_syscalls.o
+ .debug_macro   0x0000bf54      0x118 system\src\newlib\_syscalls.o
+ .debug_macro   0x0000c06c      0x159 system\src\newlib\_syscalls.o
+ .debug_macro   0x0000c1c5       0x16 system\src\newlib\_syscalls.o
+ .debug_macro   0x0000c1db      0x19e system\src\newlib\assert.o
+ .debug_macro   0x0000c379       0x1c system\src\newlib\assert.o
+ .debug_macro   0x0000c395      0x195 system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+ .debug_macro   0x0000c52a      0x28f system\src\stm32f0-stdperiph\stm32f0xx_dma.o
+ .debug_macro   0x0000c7b9      0x16b system\src\stm32f0-stdperiph\stm32f0xx_exti.o
+ .debug_macro   0x0000c924       0xd1 system\src\stm32f0-stdperiph\stm32f0xx_exti.o
+ .debug_macro   0x0000c9f5      0x165 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+ .debug_macro   0x0000cb5a      0x17f system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+ .debug_macro   0x0000ccd9      0x165 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+ .debug_macro   0x0000ce3e       0x34 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+ .debug_macro   0x0000ce72      0x183 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+ .debug_macro   0x0000cff5      0x4dd system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+ .debug_macro   0x0000d4d2      0x165 system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+ .debug_macro   0x0000d637      0x17e system\src\stm32f0-stdperiph\stm32f0xx_syscfg.o
+ .debug_macro   0x0000d7b5      0x17d system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .debug_macro   0x0000d932      0x34d system\src\stm32f0-stdperiph\stm32f0xx_usart.o
