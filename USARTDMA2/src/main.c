@@ -25,6 +25,7 @@
 // GLOBAL VARIABLES
 //====================================================================
 char lcdstring[16];
+uint16_t CH[11];
 uint8_t RxBuffer[25];
 int count;
 //====================================================================
@@ -52,11 +53,14 @@ void main (void)
 	init_NVIC();
 	for(;;){
 		lcd_command(CURSOR_HOME);
-		sprintf(lcdstring,"time:%d",count);
+		sprintf(lcdstring,"RX[%d]:%d",2,RxBuffer[2]);
 		lcd_putstring(lcdstring);
 		lcd_command(LINE_TWO);
-		int temp = RxBuffer[0];
-		sprintf(lcdstring,"USART:%d",temp);
+
+		CH[0]= (RxBuffer[1]<<3)+(RxBuffer[2]>>5);
+		CH[1]= (RxBuffer[2]<<3)&255;
+		int temp = CH[0];
+		sprintf(lcdstring,"USART:%d",CH[1]);
 		lcd_putstring(lcdstring);
 	}
 }
@@ -116,10 +120,11 @@ void init_DMAUSART1(void){
 	DMA1_Channel3->CPAR=(uint32_t) &(USART1->RDR);
 	DMA1_Channel3->CMAR=(uint32_t) &(RxBuffer[0]);
 	DMA1_Channel3->CCR=(DMA_M2M_Disable|DMA_Priority_VeryHigh|DMA_MemoryDataSize_Byte|DMA_PeripheralDataSize_Byte
-			|DMA_MemoryInc_Enable|DMA_PeripheralInc_Disable|DMA_Mode_Circular|DMA_DIR_PeripheralSRC);
+			|DMA_MemoryInc_Enable|DMA_PeripheralInc_Disable|DMA_Mode_Normal|DMA_DIR_PeripheralSRC);
 	USART_DMACmd(USART1,USART_DMAReq_Rx,ENABLE);
 	DMA_Cmd(DMA1_Channel3,ENABLE);
 	USART_Cmd(USART1,ENABLE);
+	USART_ITConfig(USART1,USART_IT_IDLE,ENABLE);
 }
 void init_USART2(void){
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2,ENABLE);
@@ -144,22 +149,34 @@ void init_TIM14(void){
 	TIM_Cmd(TIM14,ENABLE);
 }
 void init_NVIC(void){
-	NVIC_InitTypeDef NVIC_TIM14_init;
-	NVIC_TIM14_init.NVIC_IRQChannel=TIM14_IRQn;
-	NVIC_TIM14_init.NVIC_IRQChannelPriority=0;
-	NVIC_TIM14_init.NVIC_IRQChannelCmd=ENABLE;
-	NVIC_Init(&NVIC_TIM14_init);
+	NVIC_InitTypeDef NVIC_TIM14_UE;
+	NVIC_TIM14_UE.NVIC_IRQChannel=TIM14_IRQn;
+	NVIC_TIM14_UE.NVIC_IRQChannelPriority=0;
+	NVIC_TIM14_UE.NVIC_IRQChannelCmd=ENABLE;
+	NVIC_Init(&NVIC_TIM14_UE);
+	NVIC_InitTypeDef NVIC_USART_IDLE;
+	NVIC_USART_IDLE.NVIC_IRQChannel=USART1_IRQn;
+	NVIC_USART_IDLE.NVIC_IRQChannelPriority=1;
+	NVIC_USART_IDLE.NVIC_IRQChannelCmd=ENABLE;
+	NVIC_Init(&NVIC_USART_IDLE);
 }
 void TIM14_IRQHandler(void){
 	count++;
 	USART2->TDR=240;
 	while(!USART_GetFlagStatus(USART1,USART_FLAG_TC)){}
-	USART2->TDR=191;
+	//USART2->TDR=191;
+	//while(!USART_GetFlagStatus(USART1,USART_FLAG_TC)){}
+	USART2->TDR=75;
 	while(!USART_GetFlagStatus(USART1,USART_FLAG_TC)){}
-	USART2->TDR=197;
 	//SART_SendData(USART2,0x240);
 	TIM_ClearITPendingBit(TIM14,TIM_IT_Update);
 
+}
+void USART1_IRQHandler(void){
+	DMA_Cmd(DMA1_Channel3,DISABLE);
+	DMA_SetCurrDataCounter(DMA1_Channel3,25);
+	DMA_Cmd(DMA1_Channel3,ENABLE);
+	USART_ClearITPendingBit(USART1,USART_IT_IDLE);
 }
 //********************************************************************
 // END OF PROGRAM
