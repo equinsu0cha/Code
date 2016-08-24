@@ -28,123 +28,147 @@
 // GLOBAL VARIABLES
 //====================================================================
 uint8_t RxBuffer[24];
-uint16_t temp = 0,ch1,ch2,ch3,ch4,ch5,ch6;
-int y=0;
+uint16_t temp = 0,CH[16],FLAGS;
 char lcdstring[16];
 //================GPIO_ODR_0====================================================
 // FUNCTION DECLARATIONS
 //====================================================================
-void init_ports(void);
-void DMAUSART_config(void);
+void init_GPIO(void);
+void DMAUSART1_config(void);
 void init_NVIC(void);
-void init_EXTI(void);
-void EXTI0_1_IRQHandler(void);
+void USART1_IRQHandler(void);
+uint16_t endian(uint16_t little);
 //====================================================================
 // MAIN FUNCTION
 //====================================================================
 void main (void)
 {
 	init_LCD();
-	init_ports();
-	lcd_putstring("Press SW1");
-	while((GPIOA->IDR)&(GPIO_IDR_1)); //wait for DMA config
+	init_GPIO();
+	lcd_putstring("Wait for SW0");
+	while((GPIO_ReadInputData(GPIOA))&(GPIO_IDR_0)){}
 	//Config for USART/DMA
-	DMAUSART_config();
+	DMAUSART1_config();
 	//NVIC Interrupts
-	init_EXTI();
 	init_NVIC();
 	lcd_command(CLEAR);
 	lcd_putstring("USART");		// Display string on line 1
 	for(;;){
-		//USART_ClearITPendingBit(USART1,USART_IT_RXNE);
-		for(int x = 0; x <25; x++){
-			lcd_command(CURSOR_HOME);
-			sprintf(lcdstring,"BRR:%d",(USART1->BRR));
-			lcd_putstring(lcdstring);
-			if (RxBuffer[x]==241){
-				GPIO_Write(GPIOB,0xff);
-			}
-			lcd_command(LINE_TWO);
-			sprintf(lcdstring,"Buffer[%d]: %d SPACE",x,RxBuffer[x]);
-			lcd_putstring(lcdstring);
-			for(int y = 0; y <6553; y++){
-				for(int z = 0; z <2; z ++){}
-			}
-		}
+		lcd_command(CURSOR_HOME);
+		sprintf(lcdstring,"ch1:%d   ch2:%d    ch3:%d     ",endian(CH[1]),endian(CH[2]),endian(CH[3]));
+		lcd_putstring(lcdstring);
+		lcd_command(LINE_TWO);
+		sprintf(lcdstring,"ch4:%d   ch5:%d    ch6:%d     ",endian(CH[4]),endian(CH[5]),endian(CH[6]));
+		lcd_putstring(lcdstring);
 	}
 }										// End of main
 
-void init_ports(void){
-	//Init GPIOA
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA,ENABLE);
-	GPIO_InitTypeDef GPIOA_struct;
+void init_GPIO(void){
+	RCC_AHBPeriphClockCmd((RCC_AHBPeriph_GPIOA|RCC_AHBPeriph_GPIOB),ENABLE);
+	GPIO_InitTypeDef GPIOA_struct,GPIOB_struct,GPIOB_USART_struct;
+	//GPIOA PA0-PA3 Inputs
 	GPIOA_struct.GPIO_Pin=(GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3);
 	GPIOA_struct.GPIO_Mode=GPIO_Mode_IN;
 	GPIOA_struct.GPIO_PuPd=GPIO_PuPd_UP;
 	GPIO_Init(GPIOA,&GPIOA_struct);
-	//Init GPIOB
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB,ENABLE);
-	GPIO_InitTypeDef GPIOB_struct;
-	GPIOB_struct.GPIO_Pin=(GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_6); //enable PB0-5
-	GPIOB_struct.GPIO_Mode=GPIO_Mode_OUT;			//as outputs
-	GPIOB_struct.GPIO_PuPd=GPIO_PuPd_NOPULL;		//no pullup resistors
+	//GPIOB PB0-PB6 Outputs
+	GPIOB_struct.GPIO_Pin=(GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_6);
+	GPIOB_struct.GPIO_Mode=GPIO_Mode_OUT;
+	GPIOB_struct.GPIO_PuPd=GPIO_PuPd_NOPULL;
 	GPIO_Init(GPIOB,&GPIOB_struct);
-	//GPIOB Alternate Function init
-	GPIO_InitTypeDef GPIOB_USART_struct;
+	//GPIOB PB7 AF0 USART1 RX
 	GPIOB_USART_struct.GPIO_Pin=(GPIO_Pin_7);
 	GPIOB_USART_struct.GPIO_Mode=GPIO_Mode_AF;
 	GPIOB_USART_struct.GPIO_OType=GPIO_OType_PP;
 	GPIOB_USART_struct.GPIO_PuPd=GPIO_PuPd_NOPULL;
 	GPIOB_USART_struct.GPIO_Speed=GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB,&GPIOB_USART_struct);
-	GPIO_PinAFConfig(GPIOB,(GPIO_PinSource7),GPIO_AF_0); //PB6-7 AF0
+	GPIO_PinAFConfig(GPIOB,(GPIO_PinSource7),GPIO_AF_0);
 }
 
-void DMAUSART_config(void){
+void DMAUSART1_config(void){
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,1);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,1);
 	//USART Config
 	USART_DeInit(USART1);
-	USART1->CR1=(USART_CR1_OVER8|USART_CR1_PCE|USART_CR1_RE);//
-	USART1->BRR=0x1E0;
-	USART1->CR2=(USART_CR2_ABRMODE_1|USART_CR2_ABREN|USART_CR2_MSBFIRST|USART_CR2_DATAINV|USART_StopBits_2);//
-	//DMA Config
-	DMA1_Channel3->CNDTR=0x18;
+	USART_InitTypeDef USART1_struct;
+	USART1_struct.USART_BaudRate=100000;
+	USART1_struct.USART_HardwareFlowControl=USART_HardwareFlowControl_None;
+	USART1_struct.USART_Mode=USART_Mode_Rx;
+	USART1_struct.USART_Parity=USART_Parity_Even;
+	USART1_struct.USART_StopBits=USART_StopBits_2;
+	USART1_struct.USART_WordLength=USART_WordLength_9b;
+	USART_Init(USART1,&USART1_struct);
+	USART_InvPinCmd(USART1,USART_InvPin_Rx,ENABLE);
+	USART_MSBFirstCmd(USART1,ENABLE);
+	DMA_DeInit(DMA1_Channel3);
+	DMA1_Channel3->CNDTR=sizeof(RxBuffer);			//25 bytes to recieve
 	DMA1_Channel3->CPAR=(uint32_t) &(USART1->RDR);
 	DMA1_Channel3->CMAR=(uint32_t) &(RxBuffer[0]);
 	DMA1_Channel3->CCR=(DMA_M2M_Disable|DMA_Priority_VeryHigh|DMA_MemoryDataSize_Byte|DMA_PeripheralDataSize_Byte
-			|DMA_MemoryInc_Enable|DMA_PeripheralInc_Disable|DMA_Mode_Circular|DMA_DIR_PeripheralSRC);
-	USART1->CR3=(USART_CR3_DMAR);
+			|DMA_MemoryInc_Enable|DMA_PeripheralInc_Disable|DMA_Mode_Normal|DMA_DIR_PeripheralSRC);
+	USART_DMACmd(USART1,USART_DMAReq_Rx,ENABLE);
 	DMA_Cmd(DMA1_Channel3,ENABLE);
-	USART1->CR1|=(USART_CR1_UE);
-}
-void init_EXTI(void){
-	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA,EXTI_PinSource0);
-	EXTI_InitTypeDef EXTI1_PA0;
-	EXTI1_PA0.EXTI_Line=EXTI_Line0;
-	EXTI1_PA0.EXTI_Mode=EXTI_Mode_Interrupt;
-	EXTI1_PA0.EXTI_Trigger=EXTI_Trigger_Falling;
-	EXTI1_PA0.EXTI_LineCmd=ENABLE;
-	EXTI_Init(&EXTI1_PA0);
+	USART_Cmd(USART1,ENABLE);
+	USART_ITConfig(USART1,USART_IT_IDLE,ENABLE);
+	DMA_Cmd(DMA1_Channel3,ENABLE);
+	USART_Cmd(USART1,ENABLE);
 }
 void init_NVIC(void){
 	NVIC_InitTypeDef NVIC_init_struct;
-	NVIC_init_struct.NVIC_IRQChannel=EXTI0_1_IRQn;
+	NVIC_init_struct.NVIC_IRQChannel=USART1_IRQn;
 	NVIC_init_struct.NVIC_IRQChannelPriority=0;
 	NVIC_init_struct.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_init_struct);
+	NVIC_init_struct.NVIC_IRQChannel=DMA1_Channel2_3_IRQn;
+	NVIC_Init(&NVIC_init_struct);
 }
-void EXTI0_1_IRQHandler(void){
-	while((GPIOA->IDR&GPIO_IDR_0)){}
-	if(y<=24){
-		y++;
+void USART1_IRQHandler(void){
+	DMA_Cmd(DMA1_Channel3,DISABLE);
+	DMA_SetCurrDataCounter(DMA1_Channel3,25);
+	DMA_Cmd(DMA1_Channel3,ENABLE);
+	USART_ClearITPendingBit(USART1,USART_IT_IDLE);
+	if(RxBuffer[0]!=240){
+		GPIO_Write(GPIOB,0xff);
 	}
 	else{
-		y=0;
+		GPIO_Write(GPIOB,0x0);
+		CH[1]=((RxBuffer[1]&0b11111111)<<3)+((RxBuffer[2]&0b11100000)>>5);
+		CH[2]=((RxBuffer[2]&0b00011111)<<6)+((RxBuffer[3]&0b11111100)>>2);
+		CH[3]=((RxBuffer[3]&0b00000011)<<9)+((RxBuffer[4]&0b11111111)<<1)+((RxBuffer[5]&0b10000000)>>7);
+		CH[4]=((RxBuffer[5]&0b01111111)<<4)+((RxBuffer[6]&0b11110000)>>4);
+		CH[5]=((RxBuffer[6]&0b00001111)<<7)+((RxBuffer[7]&0b11111110)>>1);
+		CH[6]=((RxBuffer[7]&0b00000001)<<10)+((RxBuffer[8]&0b11111111)<<2)+((RxBuffer[9]&0b11000000)>>6);
+		CH[7]=((RxBuffer[9]&0b00111111)<<5)+((RxBuffer[10]&0b11111000)>>3);
+		CH[8]=((RxBuffer[10]&0b00000111)<<8)+((RxBuffer[11]&0b11111111)>>0);
+		CH[9]=((RxBuffer[12]&0b11111111)<<3)+((RxBuffer[13]&0b11100000)>>5);
+		CH[10]=((RxBuffer[13]&0b00011111)<<6)+((RxBuffer[14]&0b11111100)>>2);
+		CH[11]=((RxBuffer[14]&0b00000011)<<9)+((RxBuffer[15]&0b11111111)<<1)+((RxBuffer[16]&0b10000000)>>7);
+		CH[12]=((RxBuffer[16]&0b01111111)<<4)+((RxBuffer[17]&0b11110000)>>4);
+		CH[13]=((RxBuffer[17]&0b00001111)<<7)+((RxBuffer[18]&0b11111110)>>1);
+		CH[14]=((RxBuffer[18]&0b00000001)<<10)+((RxBuffer[19]&0b11111111)<<2)+((RxBuffer[20]&0b11000000)>>6);
+		CH[15]=((RxBuffer[20]&0b00111111)<<5)+((RxBuffer[21]&0b11111000)>>3);
+		CH[16]=((RxBuffer[21]&0b00000111)<<8)+((RxBuffer[22]&0b11111111)>>0);
+		FLAGS=((RxBuffer[23]&0b11111111)<<3)+((RxBuffer[24]&0b11100000)>>5);
 	}
-	EXTI_ClearITPendingBit(EXTI_Line0);
-
 }
+
+uint16_t endian(uint16_t little){
+	int temp=0;
+	temp +=(little&0b10000000000)>>10;
+	temp +=(little&0b01000000000)>>8;
+	temp +=(little&0b00100000000)>>6;
+	temp +=(little&0b00010000000)>>4;
+	temp +=(little&0b00001000000)>>2;
+	temp +=(little&0b00000100000)>>0;
+	temp +=(little&0b00000010000)<<2;
+	temp +=(little&0b00000001000)<<4;
+	temp +=(little&0b00000000100)<<6;
+	temp +=(little&0b00000000010)<<8;
+	temp +=(little&0b00000000001)<<10;
+	return temp;
+}
+
 //********************************************************************
 // END OF PROGRAM
 //********************************************************************
