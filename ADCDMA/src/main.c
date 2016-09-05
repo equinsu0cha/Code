@@ -48,8 +48,8 @@ void main (void)
 	init_DMA();
 	for(;;){
 		lcd_command(LINE_TWO);
-		temp = (DMA_GetCurrDataCounter(DMA1_Channel1));
-		sprintf(lcdstring,"%d",temp);
+		temp = (ADC_Buffer[0]);
+		sprintf(lcdstring,"%d    ",temp);
 		lcd_putstring(lcdstring);
 	}
 }											// End of main
@@ -96,17 +96,15 @@ void init_adc(void){
 }
 void init_DMA(void){
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,1);
-	/*DMA1_Channel1->CNDTR=0x4;
+	DMA1_Channel1->CNDTR=0x4;
 	DMA1_Channel1->CPAR=(uint32_t) &(ADC1->DR);
 	DMA1_Channel1->CMAR=(uint32_t) &(ADC_Buffer[0]);
 	DMA1_Channel1->CCR=(DMA_M2M_Disable|DMA_Priority_VeryHigh|DMA_MemoryDataSize_Byte|DMA_PeripheralDataSize_Byte
 				|DMA_MemoryInc_Enable|DMA_PeripheralInc_Disable|DMA_Mode_Circular|DMA_DIR_PeripheralSRC|DMA_CCR_EN);
-				*/
-    DMA_DeInit(DMA1_Channel1);
+    /*DMA_DeInit(DMA1_Channel1);
 	DMA_InitTypeDef DMA_struct;
 	DMA_StructInit(&DMA_struct);
 	lcd_putstring(DMA_struct.DMA_BufferSize);
-	/*
 	DMA_struct.DMA_PeripheralBaseAddr=(uint32_t) &ADC1->DR;
 	DMA_struct.DMA_MemoryBaseAddr=(uint32_t) &ADC_Buffer[0];
 	DMA_struct.DMA_DIR=DMA_DIR_PeripheralSRC;

@@ -3962,9 +3962,11 @@ END GROUP
                 0x080000c4                DMA1_Channel1_IRQHandler
                 0x080000c4                Default_Handler
                 0x080000c4                CEC_IRQHandler
+                0x080000c4                TIM14_IRQHandler
                 0x080000c4                DMA1_Channel4_5_IRQHandler
                 0x080000c4                TIM7_IRQHandler
                 0x080000c4                TIM15_IRQHandler
+                0x080000c4                EXTI0_1_IRQHandler
                 0x080000c4                USB_IRQHandler
                 0x080000c4                SPI2_IRQHandler
                 0x080000c4                TS_IRQHandler
@@ -3990,10 +3992,10 @@ END GROUP
 
 .inits          0x08000218       0x28
                 0x08000218                __data_regions_array_start = .
-                0x08000218        0x4 LONG 0x8002ff8 LOADADDR (.data)
+                0x08000218        0x4 LONG 0x8002f98 LOADADDR (.data)
                 0x0800021c        0x4 LONG 0x20000000 ADDR (.data)
                 0x08000220        0x4 LONG 0x20000088 (ADDR (.data) + SIZEOF (.data))
-                0x08000224        0x4 LONG 0x8002ff8 LOADADDR (.data_CCMRAM)
+                0x08000224        0x4 LONG 0x8002f98 LOADADDR (.data_CCMRAM)
                 0x08000228        0x4 LONG 0x0 ADDR (.data_CCMRAM)
                 0x0800022c        0x4 LONG 0x0 (ADDR (.data_CCMRAM) + SIZEOF (.data_CCMRAM))
                 0x08000230                __data_regions_array_end = .
@@ -4025,7 +4027,7 @@ END GROUP
 .flashtext
  *(.flashtext .flashtext.*)
 
-.text           0x08000240     0x2db5
+.text           0x08000240     0x2d55
  *(.text .text.*)
  .text.delay    0x08000240       0x20 src\lcd_stm32f0.o
                 0x08000240                delay
@@ -4050,174 +4052,162 @@ END GROUP
  .text.init_adc
                 0x080005e0       0x48 src\main.o
                 0x080005e0                init_adc
- .text.init_nvic
-                0x08000628        0xc src\main.o
-                0x08000628                init_nvic
- .text.init_extio
-                0x08000634       0x30 src\main.o
-                0x08000634                init_extio
- .text.EXTI0_1_IRQHandler
-                0x08000664       0x10 src\main.o
-                0x08000664                EXTI0_1_IRQHandler
- .text.init_tim14
-                0x08000674       0x48 src\main.o
-                0x08000674                init_tim14
- .text.main     0x080006bc       0xd0 src\main.o
-                0x080006bc                main
- .text.TIM14_IRQHandler
-                0x0800078c       0x10 src\main.o
-                0x0800078c                TIM14_IRQHandler
+ .text.init_tim2
+                0x08000628       0x4c src\main.o
+                0x08000628                init_tim2
+ .text.main     0x08000674       0xc8 src\main.o
+                0x08000674                main
  .text.SetSysClock
-                0x0800079c       0xb0 system\src\cmsis\system_stm32f0xx.o
+                0x0800073c       0xb0 system\src\cmsis\system_stm32f0xx.o
  .text.SystemInit
-                0x0800084c       0x64 system\src\cmsis\system_stm32f0xx.o
-                0x0800084c                SystemInit
+                0x080007ec       0x64 system\src\cmsis\system_stm32f0xx.o
+                0x080007ec                SystemInit
  .text.SystemCoreClockUpdate
-                0x080008b0       0x94 system\src\cmsis\system_stm32f0xx.o
-                0x080008b0                SystemCoreClockUpdate
+                0x08000850       0x94 system\src\cmsis\system_stm32f0xx.o
+                0x08000850                SystemCoreClockUpdate
  .text.__initialize_hardware_early
-                0x08000944        0x8 system\src\cortexm\_initialize_hardware.o
-                0x08000944                __initialize_hardware_early
+                0x080008e4        0x8 system\src\cortexm\_initialize_hardware.o
+                0x080008e4                __initialize_hardware_early
  .text.__initialize_hardware
-                0x0800094c        0x8 system\src\cortexm\_initialize_hardware.o
-                0x0800094c                __initialize_hardware
- .text._exit    0x08000954        0x4 system\src\newlib\_exit.o
-                0x08000954                _exit
- .text._sbrk    0x08000958       0x44 system\src\newlib\_sbrk.o
-                0x08000958                _sbrk
+                0x080008ec        0x8 system\src\cortexm\_initialize_hardware.o
+                0x080008ec                __initialize_hardware
+ .text._exit    0x080008f4        0x4 system\src\newlib\_exit.o
+                0x080008f4                _exit
+ .text._sbrk    0x080008f8       0x44 system\src\newlib\_sbrk.o
+                0x080008f8                _sbrk
  .text.__initialize_args
-                0x0800099c       0x10 system\src\newlib\_syscalls.o
-                0x0800099c                __initialize_args
- .text          0x080009ac      0x114 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_udivsi3.o)
-                0x080009ac                __aeabi_uidiv
-                0x080009ac                __udivsi3
-                0x08000ab8                __aeabi_uidivmod
- .text          0x08000ac0        0x4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_dvmd_tls.o)
-                0x08000ac0                __aeabi_idiv0
-                0x08000ac0                __aeabi_ldiv0
- .text          0x08000ac4       0x3c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_fixunsdfsi.o)
-                0x08000ac4                __aeabi_d2uiz
-                0x08000ac4                __fixunsdfsi
- .text          0x08000b00      0x658 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(adddf3.o)
-                0x08000b00                __aeabi_dadd
- .text          0x08001158      0x62c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(divdf3.o)
-                0x08001158                __aeabi_ddiv
- .text          0x08001784      0x4f4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(muldf3.o)
-                0x08001784                __aeabi_dmul
- .text          0x08001c78      0x6a8 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(subdf3.o)
-                0x08001c78                __aeabi_dsub
- .text          0x08002320       0x6c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(fixdfsi.o)
-                0x08002320                __aeabi_d2iz
- .text          0x0800238c       0x84 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(floatsidf.o)
-                0x0800238c                __aeabi_i2d
- .text          0x08002410       0x7c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_arm_cmpdf2.o)
-                0x08002410                __aeabi_cdrcmple
-                0x08002420                __aeabi_cdcmple
-                0x08002420                __aeabi_cdcmpeq
-                0x08002430                __aeabi_dcmpeq
-                0x0800243c                __aeabi_dcmplt
-                0x08002450                __aeabi_dcmple
-                0x08002464                __aeabi_dcmpgt
-                0x08002478                __aeabi_dcmpge
- .text          0x0800248c       0x3c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_clzsi2.o)
-                0x0800248c                __clzsi2
- .text          0x080024c8       0x80 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(eqdf2.o)
-                0x080024c8                __nedf2
-                0x080024c8                __eqdf2
- .text          0x08002548       0xc8 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(gedf2.o)
-                0x08002548                __gedf2
-                0x08002548                __gtdf2
- .text          0x08002610       0xd4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(ledf2.o)
-                0x08002610                __ledf2
-                0x08002610                __ltdf2
- .text.__errno  0x080026e4        0xc c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-errno.o)
-                0x080026e4                __errno
- .text.sprintf  0x080026f0       0x44 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sprintf.o)
-                0x080026f0                siprintf
-                0x080026f0                sprintf
+                0x0800093c       0x10 system\src\newlib\_syscalls.o
+                0x0800093c                __initialize_args
+ .text          0x0800094c      0x114 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_udivsi3.o)
+                0x0800094c                __aeabi_uidiv
+                0x0800094c                __udivsi3
+                0x08000a58                __aeabi_uidivmod
+ .text          0x08000a60        0x4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_dvmd_tls.o)
+                0x08000a60                __aeabi_idiv0
+                0x08000a60                __aeabi_ldiv0
+ .text          0x08000a64       0x3c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_fixunsdfsi.o)
+                0x08000a64                __aeabi_d2uiz
+                0x08000a64                __fixunsdfsi
+ .text          0x08000aa0      0x658 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(adddf3.o)
+                0x08000aa0                __aeabi_dadd
+ .text          0x080010f8      0x62c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(divdf3.o)
+                0x080010f8                __aeabi_ddiv
+ .text          0x08001724      0x4f4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(muldf3.o)
+                0x08001724                __aeabi_dmul
+ .text          0x08001c18      0x6a8 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(subdf3.o)
+                0x08001c18                __aeabi_dsub
+ .text          0x080022c0       0x6c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(fixdfsi.o)
+                0x080022c0                __aeabi_d2iz
+ .text          0x0800232c       0x84 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(floatsidf.o)
+                0x0800232c                __aeabi_i2d
+ .text          0x080023b0       0x7c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_arm_cmpdf2.o)
+                0x080023b0                __aeabi_cdrcmple
+                0x080023c0                __aeabi_cdcmple
+                0x080023c0                __aeabi_cdcmpeq
+                0x080023d0                __aeabi_dcmpeq
+                0x080023dc                __aeabi_dcmplt
+                0x080023f0                __aeabi_dcmple
+                0x08002404                __aeabi_dcmpgt
+                0x08002418                __aeabi_dcmpge
+ .text          0x0800242c       0x3c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_clzsi2.o)
+                0x0800242c                __clzsi2
+ .text          0x08002468       0x80 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(eqdf2.o)
+                0x08002468                __nedf2
+                0x08002468                __eqdf2
+ .text          0x080024e8       0xc8 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(gedf2.o)
+                0x080024e8                __gedf2
+                0x080024e8                __gtdf2
+ .text          0x080025b0       0xd4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(ledf2.o)
+                0x080025b0                __ledf2
+                0x080025b0                __ltdf2
+ .text.__errno  0x08002684        0xc c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-errno.o)
+                0x08002684                __errno
+ .text.sprintf  0x08002690       0x44 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sprintf.o)
+                0x08002690                siprintf
+                0x08002690                sprintf
  .text.__ssputs_r
-                0x08002734       0xc4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
-                0x08002734                __ssputs_r
+                0x080026d4       0xc4 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
+                0x080026d4                __ssputs_r
  .text._svfprintf_r
-                0x080027f8      0x1fc c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
-                0x080027f8                _svfiprintf_r
-                0x080027f8                _svfprintf_r
+                0x08002798      0x1fc c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
+                0x08002798                _svfiprintf_r
+                0x08002798                _svfprintf_r
  .text._printf_common
-                0x080029f4       0xdc c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
-                0x080029f4                _printf_common
+                0x08002994       0xdc c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
+                0x08002994                _printf_common
  .text._printf_i
-                0x08002ad0      0x244 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
-                0x08002ad0                _printf_i
- .text.memchr   0x08002d14       0x16 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memchr-stub.o)
-                0x08002d14                memchr
- .text.memcpy   0x08002d2a       0x12 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memcpy-stub.o)
-                0x08002d2a                memcpy
- .text.memmove  0x08002d3c       0x2a c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memmove.o)
-                0x08002d3c                memmove
- *fill*         0x08002d66        0x2 
- .text._free_r  0x08002d68       0x8c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-freer.o)
-                0x08002d68                _free_r
+                0x08002a70      0x244 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
+                0x08002a70                _printf_i
+ .text.memchr   0x08002cb4       0x16 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memchr-stub.o)
+                0x08002cb4                memchr
+ .text.memcpy   0x08002cca       0x12 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memcpy-stub.o)
+                0x08002cca                memcpy
+ .text.memmove  0x08002cdc       0x2a c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memmove.o)
+                0x08002cdc                memmove
+ *fill*         0x08002d06        0x2 
+ .text._free_r  0x08002d08       0x8c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-freer.o)
+                0x08002d08                _free_r
  .text._malloc_r
-                0x08002df4       0xac c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
-                0x08002df4                _malloc_r
+                0x08002d94       0xac c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
+                0x08002d94                _malloc_r
  .text._realloc_r
-                0x08002ea0       0x4c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-reallocr.o)
-                0x08002ea0                _realloc_r
- .text._sbrk_r  0x08002eec       0x24 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sbrkr.o)
-                0x08002eec                _sbrk_r
+                0x08002e40       0x4c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-reallocr.o)
+                0x08002e40                _realloc_r
+ .text._sbrk_r  0x08002e8c       0x24 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sbrkr.o)
+                0x08002e8c                _sbrk_r
  .text._malloc_usable_size_r
-                0x08002f10       0x16 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-msizer.o)
-                0x08002f10                _malloc_usable_size_r
+                0x08002eb0       0x16 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-msizer.o)
+                0x08002eb0                _malloc_usable_size_r
  *(.rodata .rodata.* .constdata .constdata.*)
- *fill*         0x08002f26        0x2 
+ *fill*         0x08002ec6        0x2 
  .rodata.str1.4
-                0x08002f28       0x18 src\main.o
- .rodata        0x08002f40       0x40 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(divdf3.o)
- .rodata        0x08002f80       0x40 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(muldf3.o)
+                0x08002ec8       0x18 src\main.o
+ .rodata        0x08002ee0       0x40 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(divdf3.o)
+ .rodata        0x08002f20       0x40 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(muldf3.o)
  .rodata.str1.1
-                0x08002fc0        0x2 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-impure.o)
+                0x08002f60        0x2 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-impure.o)
  .rodata.str1.1
-                0x08002fc2       0x11 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
+                0x08002f62       0x11 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
  .rodata.str1.1
-                0x08002fd3       0x22 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
+                0x08002f73       0x22 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
  *(vtable)
  *(.eh_frame*)
  *(.glue_7)
- .glue_7        0x08002ff5        0x0 linker stubs
+ .glue_7        0x08002f95        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x08002ff5        0x0 linker stubs
+ .glue_7t       0x08002f95        0x0 linker stubs
 
-.vfp11_veneer   0x08002ff8        0x0
- .vfp11_veneer  0x08002ff8        0x0 linker stubs
+.vfp11_veneer   0x08002f98        0x0
+ .vfp11_veneer  0x08002f98        0x0 linker stubs
 
-.v4_bx          0x08002ff8        0x0
- .v4_bx         0x08002ff8        0x0 linker stubs
+.v4_bx          0x08002f98        0x0
+ .v4_bx         0x08002f98        0x0 linker stubs
 
-.iplt           0x08002ff8        0x0
- .iplt          0x08002ff8        0x0 src\_write.o
+.iplt           0x08002f98        0x0
+ .iplt          0x08002f98        0x0 src\_write.o
 
-.rel.dyn        0x08002ff8        0x0
- .rel.iplt      0x08002ff8        0x0 src\_write.o
+.rel.dyn        0x08002f98        0x0
+ .rel.iplt      0x08002f98        0x0 src\_write.o
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x08002ff8                . = ALIGN (0x4)
-                0x08002ff8                __exidx_start = .
+                0x08002f98                . = ALIGN (0x4)
+                0x08002f98                __exidx_start = .
 
 .ARM.exidx
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-                0x08002ff8                __exidx_end = .
-                0x08002ff8                . = ALIGN (0x4)
-                0x08002ff8                _etext = .
-                0x08002ff8                __etext = .
+                0x08002f98                __exidx_end = .
+                0x08002f98                . = ALIGN (0x4)
+                0x08002f98                _etext = .
+                0x08002f98                __etext = .
 
-.data_CCMRAM    0x00000000        0x0 load address 0x08002ff8
+.data_CCMRAM    0x00000000        0x0 load address 0x08002f98
  FILL mask 0xff
  *(.data.CCMRAM .data.CCMRAM.*)
                 0x00000000                . = ALIGN (0x4)
-                0x08002ff8                _sidata = LOADADDR (.data)
+                0x08002f98                _sidata = LOADADDR (.data)
 
-.data           0x20000000       0x88 load address 0x08002ff8
+.data           0x20000000       0x88 load address 0x08002f98
  FILL mask 0xff
                 0x20000000                _sdata = .
                 0x20000000                __data_start__ = .
@@ -4243,7 +4233,7 @@ END GROUP
                 0x20000088                _edata = .
                 0x20000088                __data_end__ = .
 
-.igot.plt       0x20000088        0x0 load address 0x08003080
+.igot.plt       0x20000088        0x0 load address 0x08003020
  .igot.plt      0x20000088        0x0 src\_write.o
 
 .bss_CCMRAM     0x00000000        0x0
@@ -4444,138 +4434,138 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x220
+.debug_aranges  0x00000000      0x200
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x48 src\lcd_stm32f0.o
  .debug_aranges
-                0x00000048       0x58 src\main.o
+                0x00000048       0x38 src\main.o
  .debug_aranges
-                0x000000a0       0x30 system\src\cmsis\system_stm32f0xx.o
+                0x00000080       0x30 system\src\cmsis\system_stm32f0xx.o
  .debug_aranges
-                0x000000d0       0x20 system\src\cmsis\vectors_stm32f0xx.o
+                0x000000b0       0x20 system\src\cmsis\vectors_stm32f0xx.o
  .debug_aranges
-                0x000000f0       0x28 system\src\cortexm\_initialize_hardware.o
+                0x000000d0       0x28 system\src\cortexm\_initialize_hardware.o
  .debug_aranges
-                0x00000118       0x50 system\src\cortexm\exception_handlers.o
+                0x000000f8       0x50 system\src\cortexm\exception_handlers.o
  .debug_aranges
-                0x00000168       0x28 system\src\newlib\_exit.o
+                0x00000148       0x28 system\src\newlib\_exit.o
  .debug_aranges
-                0x00000190       0x20 system\src\newlib\_sbrk.o
+                0x00000170       0x20 system\src\newlib\_sbrk.o
  .debug_aranges
-                0x000001b0       0x40 system\src\newlib\_startup.o
+                0x00000190       0x40 system\src\newlib\_startup.o
  .debug_aranges
-                0x000001f0       0x30 system\src\newlib\_syscalls.o
+                0x000001d0       0x30 system\src\newlib\_syscalls.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x1ca0
+.debug_info     0x00000000     0x1965
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x41b src\lcd_stm32f0.o
- .debug_info    0x0000041b      0xa12 src\main.o
- .debug_info    0x00000e2d      0x2f6 system\src\cmsis\system_stm32f0xx.o
- .debug_info    0x00001123       0xd1 system\src\cmsis\vectors_stm32f0xx.o
- .debug_info    0x000011f4       0xcb system\src\cortexm\_initialize_hardware.o
- .debug_info    0x000012bf      0x1c4 system\src\cortexm\exception_handlers.o
- .debug_info    0x00001483       0xee system\src\newlib\_exit.o
- .debug_info    0x00001571      0x11f system\src\newlib\_sbrk.o
- .debug_info    0x00001690      0x454 system\src\newlib\_startup.o
- .debug_info    0x00001ae4      0x1bc system\src\newlib\_syscalls.o
+ .debug_info    0x0000041b      0x6d7 src\main.o
+ .debug_info    0x00000af2      0x2f6 system\src\cmsis\system_stm32f0xx.o
+ .debug_info    0x00000de8       0xd1 system\src\cmsis\vectors_stm32f0xx.o
+ .debug_info    0x00000eb9       0xcb system\src\cortexm\_initialize_hardware.o
+ .debug_info    0x00000f84      0x1c4 system\src\cortexm\exception_handlers.o
+ .debug_info    0x00001148       0xee system\src\newlib\_exit.o
+ .debug_info    0x00001236      0x11f system\src\newlib\_sbrk.o
+ .debug_info    0x00001355      0x454 system\src\newlib\_startup.o
+ .debug_info    0x000017a9      0x1bc system\src\newlib\_syscalls.o
 
-.debug_abbrev   0x00000000      0xa7b
+.debug_abbrev   0x00000000      0x9dd
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x14b src\lcd_stm32f0.o
- .debug_abbrev  0x0000014b      0x1da src\main.o
- .debug_abbrev  0x00000325      0x148 system\src\cmsis\system_stm32f0xx.o
- .debug_abbrev  0x0000046d       0x9d system\src\cmsis\vectors_stm32f0xx.o
- .debug_abbrev  0x0000050a       0x63 system\src\cortexm\_initialize_hardware.o
- .debug_abbrev  0x0000056d      0x100 system\src\cortexm\exception_handlers.o
- .debug_abbrev  0x0000066d       0xbd system\src\newlib\_exit.o
- .debug_abbrev  0x0000072a       0xb9 system\src\newlib\_sbrk.o
- .debug_abbrev  0x000007e3      0x1ac system\src\newlib\_startup.o
- .debug_abbrev  0x0000098f       0xec system\src\newlib\_syscalls.o
+ .debug_abbrev  0x0000014b      0x13c src\main.o
+ .debug_abbrev  0x00000287      0x148 system\src\cmsis\system_stm32f0xx.o
+ .debug_abbrev  0x000003cf       0x9d system\src\cmsis\vectors_stm32f0xx.o
+ .debug_abbrev  0x0000046c       0x63 system\src\cortexm\_initialize_hardware.o
+ .debug_abbrev  0x000004cf      0x100 system\src\cortexm\exception_handlers.o
+ .debug_abbrev  0x000005cf       0xbd system\src\newlib\_exit.o
+ .debug_abbrev  0x0000068c       0xb9 system\src\newlib\_sbrk.o
+ .debug_abbrev  0x00000745      0x1ac system\src\newlib\_startup.o
+ .debug_abbrev  0x000008f1       0xec system\src\newlib\_syscalls.o
 
-.debug_line     0x00000000     0x265b
+.debug_line     0x00000000     0x2604
  *(.debug_line)
  .debug_line    0x00000000      0x41f src\lcd_stm32f0.o
- .debug_line    0x0000041f      0x661 src\main.o
- .debug_line    0x00000a80      0x3c0 system\src\cmsis\system_stm32f0xx.o
- .debug_line    0x00000e40      0x103 system\src\cmsis\vectors_stm32f0xx.o
- .debug_line    0x00000f43      0x382 system\src\cortexm\_initialize_hardware.o
- .debug_line    0x000012c5      0x63c system\src\cortexm\exception_handlers.o
- .debug_line    0x00001901      0x322 system\src\newlib\_exit.o
- .debug_line    0x00001c23      0x2d4 system\src\newlib\_sbrk.o
- .debug_line    0x00001ef7      0x38b system\src\newlib\_startup.o
- .debug_line    0x00002282      0x3d9 system\src\newlib\_syscalls.o
+ .debug_line    0x0000041f      0x60a src\main.o
+ .debug_line    0x00000a29      0x3c0 system\src\cmsis\system_stm32f0xx.o
+ .debug_line    0x00000de9      0x103 system\src\cmsis\vectors_stm32f0xx.o
+ .debug_line    0x00000eec      0x382 system\src\cortexm\_initialize_hardware.o
+ .debug_line    0x0000126e      0x63c system\src\cortexm\exception_handlers.o
+ .debug_line    0x000018aa      0x322 system\src\newlib\_exit.o
+ .debug_line    0x00001bcc      0x2d4 system\src\newlib\_sbrk.o
+ .debug_line    0x00001ea0      0x38b system\src\newlib\_startup.o
+ .debug_line    0x0000222b      0x3d9 system\src\newlib\_syscalls.o
 
-.debug_frame    0x00000000      0x860
+.debug_frame    0x00000000      0x820
  *(.debug_frame)
  .debug_frame   0x00000000       0xa4 src\lcd_stm32f0.o
- .debug_frame   0x000000a4       0x9c src\main.o
- .debug_frame   0x00000140       0x54 system\src\cmsis\system_stm32f0xx.o
- .debug_frame   0x00000194       0x20 system\src\cmsis\vectors_stm32f0xx.o
- .debug_frame   0x000001b4       0x40 system\src\cortexm\_initialize_hardware.o
- .debug_frame   0x000001f4       0x88 system\src\cortexm\exception_handlers.o
- .debug_frame   0x0000027c       0x38 system\src\newlib\_exit.o
- .debug_frame   0x000002b4       0x28 system\src\newlib\_sbrk.o
- .debug_frame   0x000002dc       0x80 system\src\newlib\_startup.o
- .debug_frame   0x0000035c       0x50 system\src\newlib\_syscalls.o
- .debug_frame   0x000003ac       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_udivsi3.o)
- .debug_frame   0x000003cc       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_fixunsdfsi.o)
- .debug_frame   0x000003f8       0x3c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(adddf3.o)
- .debug_frame   0x00000434       0x3c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(divdf3.o)
- .debug_frame   0x00000470       0x3c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(muldf3.o)
- .debug_frame   0x000004ac       0x38 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(subdf3.o)
- .debug_frame   0x000004e4       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(fixdfsi.o)
- .debug_frame   0x00000510       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(floatsidf.o)
- .debug_frame   0x0000053c       0x38 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(eqdf2.o)
- .debug_frame   0x00000574       0x38 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(gedf2.o)
- .debug_frame   0x000005ac       0x38 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(ledf2.o)
- .debug_frame   0x000005e4       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-errno.o)
- .debug_frame   0x00000604       0x50 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sprintf.o)
- .debug_frame   0x00000654       0x74 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
- .debug_frame   0x000006c8       0x54 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
- .debug_frame   0x0000071c       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memchr-stub.o)
- .debug_frame   0x0000073c       0x28 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memcpy-stub.o)
- .debug_frame   0x00000764       0x28 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memmove.o)
- .debug_frame   0x0000078c       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-freer.o)
- .debug_frame   0x000007b8       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
- .debug_frame   0x000007e4       0x30 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-reallocr.o)
- .debug_frame   0x00000814       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sbrkr.o)
- .debug_frame   0x00000840       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-msizer.o)
+ .debug_frame   0x000000a4       0x5c src\main.o
+ .debug_frame   0x00000100       0x54 system\src\cmsis\system_stm32f0xx.o
+ .debug_frame   0x00000154       0x20 system\src\cmsis\vectors_stm32f0xx.o
+ .debug_frame   0x00000174       0x40 system\src\cortexm\_initialize_hardware.o
+ .debug_frame   0x000001b4       0x88 system\src\cortexm\exception_handlers.o
+ .debug_frame   0x0000023c       0x38 system\src\newlib\_exit.o
+ .debug_frame   0x00000274       0x28 system\src\newlib\_sbrk.o
+ .debug_frame   0x0000029c       0x80 system\src\newlib\_startup.o
+ .debug_frame   0x0000031c       0x50 system\src\newlib\_syscalls.o
+ .debug_frame   0x0000036c       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_udivsi3.o)
+ .debug_frame   0x0000038c       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(_fixunsdfsi.o)
+ .debug_frame   0x000003b8       0x3c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(adddf3.o)
+ .debug_frame   0x000003f4       0x3c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(divdf3.o)
+ .debug_frame   0x00000430       0x3c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(muldf3.o)
+ .debug_frame   0x0000046c       0x38 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(subdf3.o)
+ .debug_frame   0x000004a4       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(fixdfsi.o)
+ .debug_frame   0x000004d0       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(floatsidf.o)
+ .debug_frame   0x000004fc       0x38 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(eqdf2.o)
+ .debug_frame   0x00000534       0x38 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(gedf2.o)
+ .debug_frame   0x0000056c       0x38 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/armv6-m\libgcc.a(ledf2.o)
+ .debug_frame   0x000005a4       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-errno.o)
+ .debug_frame   0x000005c4       0x50 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sprintf.o)
+ .debug_frame   0x00000614       0x74 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-svfprintf.o)
+ .debug_frame   0x00000688       0x54 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-vfprintf_i.o)
+ .debug_frame   0x000006dc       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memchr-stub.o)
+ .debug_frame   0x000006fc       0x28 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memcpy-stub.o)
+ .debug_frame   0x00000724       0x28 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-memmove.o)
+ .debug_frame   0x0000074c       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-freer.o)
+ .debug_frame   0x00000778       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-mallocr.o)
+ .debug_frame   0x000007a4       0x30 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-reallocr.o)
+ .debug_frame   0x000007d4       0x2c c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-sbrkr.o)
+ .debug_frame   0x00000800       0x20 c:/program files (x86)/gnu tools arm embedded/5.3 2016q1/bin/../lib/gcc/arm-none-eabi/5.3.1/../../../../arm-none-eabi/lib/armv6-m\libg_nano.a(lib_a-nano-msizer.o)
 
-.debug_str      0x00000000    0x459a7
+.debug_str      0x00000000    0x4574c
  *(.debug_str)
  .debug_str     0x00000000    0x3f270 src\lcd_stm32f0.o
                               0x3f3f2 (size before relaxing)
- .debug_str     0x0003f270     0x3e73 src\main.o
-                              0x432ee (size before relaxing)
- .debug_str     0x000430e3       0xd4 system\src\cmsis\system_stm32f0xx.o
+ .debug_str     0x0003f270     0x3c0f src\main.o
+                              0x4307d (size before relaxing)
+ .debug_str     0x00042e7f       0xdd system\src\cmsis\system_stm32f0xx.o
                               0x3f116 (size before relaxing)
- .debug_str     0x000431b7       0x9c system\src\cmsis\vectors_stm32f0xx.o
+ .debug_str     0x00042f5c       0x9c system\src\cmsis\vectors_stm32f0xx.o
                                0x2ede (size before relaxing)
- .debug_str     0x00043253       0x78 system\src\cortexm\_initialize_hardware.o
+ .debug_str     0x00042ff8       0x78 system\src\cortexm\_initialize_hardware.o
                               0x3f068 (size before relaxing)
- .debug_str     0x000432cb     0x10b4 system\src\cortexm\exception_handlers.o
+ .debug_str     0x00043070     0x10b4 system\src\cortexm\exception_handlers.o
                               0x435b2 (size before relaxing)
- .debug_str     0x0004437f      0x11b system\src\newlib\_exit.o
+ .debug_str     0x00044124      0x11b system\src\newlib\_exit.o
                                0x697a (size before relaxing)
- .debug_str     0x0004449a      0x4de system\src\newlib\_sbrk.o
+ .debug_str     0x0004423f      0x4de system\src\newlib\_sbrk.o
                                0x5d65 (size before relaxing)
- .debug_str     0x00044978      0x229 system\src\newlib\_startup.o
+ .debug_str     0x0004471d      0x229 system\src\newlib\_startup.o
                                0x5900 (size before relaxing)
- .debug_str     0x00044ba1      0xe06 system\src\newlib\_syscalls.o
+ .debug_str     0x00044946      0xe06 system\src\newlib\_syscalls.o
                                0x6bad (size before relaxing)
 
-.debug_loc      0x00000000      0x50e
+.debug_loc      0x00000000      0x4fa
  *(.debug_loc)
  .debug_loc     0x00000000       0xb6 src\lcd_stm32f0.o
- .debug_loc     0x000000b6       0x27 src\main.o
- .debug_loc     0x000000dd       0xee system\src\cmsis\system_stm32f0xx.o
- .debug_loc     0x000001cb       0x7b system\src\newlib\_sbrk.o
- .debug_loc     0x00000246      0x265 system\src\newlib\_startup.o
- .debug_loc     0x000004ab       0x63 system\src\newlib\_syscalls.o
+ .debug_loc     0x000000b6       0x13 src\main.o
+ .debug_loc     0x000000c9       0xee system\src\cmsis\system_stm32f0xx.o
+ .debug_loc     0x000001b7       0x7b system\src\newlib\_sbrk.o
+ .debug_loc     0x00000232      0x265 system\src\newlib\_startup.o
+ .debug_loc     0x00000497       0x63 system\src\newlib\_syscalls.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -4593,17 +4583,17 @@ END GROUP
  *(.debug_varnames)
 OUTPUT(STM Servo.elf elf32-littlearm)
 
-.debug_ranges   0x00000000      0x198
+.debug_ranges   0x00000000      0x178
  .debug_ranges  0x00000000       0x38 src\lcd_stm32f0.o
- .debug_ranges  0x00000038       0x48 src\main.o
- .debug_ranges  0x00000080       0x20 system\src\cmsis\system_stm32f0xx.o
- .debug_ranges  0x000000a0       0x10 system\src\cmsis\vectors_stm32f0xx.o
- .debug_ranges  0x000000b0       0x18 system\src\cortexm\_initialize_hardware.o
- .debug_ranges  0x000000c8       0x40 system\src\cortexm\exception_handlers.o
- .debug_ranges  0x00000108       0x18 system\src\newlib\_exit.o
- .debug_ranges  0x00000120       0x10 system\src\newlib\_sbrk.o
- .debug_ranges  0x00000130       0x48 system\src\newlib\_startup.o
- .debug_ranges  0x00000178       0x20 system\src\newlib\_syscalls.o
+ .debug_ranges  0x00000038       0x28 src\main.o
+ .debug_ranges  0x00000060       0x20 system\src\cmsis\system_stm32f0xx.o
+ .debug_ranges  0x00000080       0x10 system\src\cmsis\vectors_stm32f0xx.o
+ .debug_ranges  0x00000090       0x18 system\src\cortexm\_initialize_hardware.o
+ .debug_ranges  0x000000a8       0x40 system\src\cortexm\exception_handlers.o
+ .debug_ranges  0x000000e8       0x18 system\src\newlib\_exit.o
+ .debug_ranges  0x00000100       0x10 system\src\newlib\_sbrk.o
+ .debug_ranges  0x00000110       0x48 system\src\newlib\_startup.o
+ .debug_ranges  0x00000158       0x20 system\src\newlib\_syscalls.o
 
 .debug_macro    0x00000000     0xc1db
  .debug_macro   0x00000000      0x16a src\lcd_stm32f0.o

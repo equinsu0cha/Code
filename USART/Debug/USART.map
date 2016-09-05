@@ -4322,41 +4322,41 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x545b
+.debug_info     0x00000000     0x544a
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x41b src\lcd_stm32f0.o
- .debug_info    0x0000041b      0x87c src\main.o
- .debug_info    0x00000c97      0x2f6 system\src\cmsis\system_stm32f0xx.o
- .debug_info    0x00000f8d       0xd1 system\src\cmsis\vectors_stm32f0xx.o
- .debug_info    0x0000105e       0xcb system\src\cortexm\_initialize_hardware.o
- .debug_info    0x00001129      0x1c4 system\src\cortexm\exception_handlers.o
- .debug_info    0x000012ed       0xee system\src\newlib\_exit.o
- .debug_info    0x000013db      0x11f system\src\newlib\_sbrk.o
- .debug_info    0x000014fa      0x454 system\src\newlib\_startup.o
- .debug_info    0x0000194e      0x1bc system\src\newlib\_syscalls.o
- .debug_info    0x00001b0a      0x16c system\src\newlib\assert.o
- .debug_info    0x00001c76      0xa0b system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
- .debug_info    0x00002681      0x3f9 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
- .debug_info    0x00002a7a      0xf1d system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
- .debug_info    0x00003997     0x1ac4 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .debug_info    0x0000041b      0x86b src\main.o
+ .debug_info    0x00000c86      0x2f6 system\src\cmsis\system_stm32f0xx.o
+ .debug_info    0x00000f7c       0xd1 system\src\cmsis\vectors_stm32f0xx.o
+ .debug_info    0x0000104d       0xcb system\src\cortexm\_initialize_hardware.o
+ .debug_info    0x00001118      0x1c4 system\src\cortexm\exception_handlers.o
+ .debug_info    0x000012dc       0xee system\src\newlib\_exit.o
+ .debug_info    0x000013ca      0x11f system\src\newlib\_sbrk.o
+ .debug_info    0x000014e9      0x454 system\src\newlib\_startup.o
+ .debug_info    0x0000193d      0x1bc system\src\newlib\_syscalls.o
+ .debug_info    0x00001af9      0x16c system\src\newlib\assert.o
+ .debug_info    0x00001c65      0xa0b system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+ .debug_info    0x00002670      0x3f9 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+ .debug_info    0x00002a69      0xf1d system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+ .debug_info    0x00003986     0x1ac4 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
 
-.debug_abbrev   0x00000000     0x123f
+.debug_abbrev   0x00000000     0x1227
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x14b src\lcd_stm32f0.o
- .debug_abbrev  0x0000014b      0x1a8 src\main.o
- .debug_abbrev  0x000002f3      0x148 system\src\cmsis\system_stm32f0xx.o
- .debug_abbrev  0x0000043b       0x9d system\src\cmsis\vectors_stm32f0xx.o
- .debug_abbrev  0x000004d8       0x63 system\src\cortexm\_initialize_hardware.o
- .debug_abbrev  0x0000053b      0x100 system\src\cortexm\exception_handlers.o
- .debug_abbrev  0x0000063b       0xbd system\src\newlib\_exit.o
- .debug_abbrev  0x000006f8       0xb9 system\src\newlib\_sbrk.o
- .debug_abbrev  0x000007b1      0x1ac system\src\newlib\_startup.o
- .debug_abbrev  0x0000095d       0xec system\src\newlib\_syscalls.o
- .debug_abbrev  0x00000a49       0xb9 system\src\newlib\assert.o
- .debug_abbrev  0x00000b02      0x1d6 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
- .debug_abbrev  0x00000cd8      0x167 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
- .debug_abbrev  0x00000e3f      0x237 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
- .debug_abbrev  0x00001076      0x1c9 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
+ .debug_abbrev  0x0000014b      0x190 src\main.o
+ .debug_abbrev  0x000002db      0x148 system\src\cmsis\system_stm32f0xx.o
+ .debug_abbrev  0x00000423       0x9d system\src\cmsis\vectors_stm32f0xx.o
+ .debug_abbrev  0x000004c0       0x63 system\src\cortexm\_initialize_hardware.o
+ .debug_abbrev  0x00000523      0x100 system\src\cortexm\exception_handlers.o
+ .debug_abbrev  0x00000623       0xbd system\src\newlib\_exit.o
+ .debug_abbrev  0x000006e0       0xb9 system\src\newlib\_sbrk.o
+ .debug_abbrev  0x00000799      0x1ac system\src\newlib\_startup.o
+ .debug_abbrev  0x00000945       0xec system\src\newlib\_syscalls.o
+ .debug_abbrev  0x00000a31       0xb9 system\src\newlib\assert.o
+ .debug_abbrev  0x00000aea      0x1d6 system\src\stm32f0-stdperiph\stm32f0xx_gpio.o
+ .debug_abbrev  0x00000cc0      0x167 system\src\stm32f0-stdperiph\stm32f0xx_misc.o
+ .debug_abbrev  0x00000e27      0x237 system\src\stm32f0-stdperiph\stm32f0xx_rcc.o
+ .debug_abbrev  0x0000105e      0x1c9 system\src\stm32f0-stdperiph\stm32f0xx_usart.o
 
 .debug_line     0x00000000     0x4ca6
  *(.debug_line)
