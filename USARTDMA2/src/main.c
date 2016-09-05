@@ -1,18 +1,10 @@
 //********************************************************************
-//*                    EEE3017W C template                           *
+//*                    USART DMA Troubleshoot                        *
 //*                    LCD test                                      *
 //*==================================================================*
-//* WRITTEN BY:    	                 		                         *
-//* DATE CREATED:                                                    *
-//* MODIFIED:                                                        *
-//*==================================================================*
-//* PROGRAMMED IN: Eclipse Luna Service Release 1 (4.4.1)            *
-//* DEV. BOARD:    UCT STM32 Development Board                       *
-//*==================================================================*
-//* DESCRIPTION:                                                     *
-//*                                                                  *
-//********************************************************************
-// INCLUDE FILES
+// Troubleshooting project for USART DMA project
+// Generates 1 byte of S.BUS data in USART2 TX and receives and buffers
+// that byte of S.BUS in USART1 RX w/ interrupts
 //====================================================================
 #include "lcd_stm32f0.h"
 #include "stm32f0xx.h"

@@ -4486,18 +4486,18 @@ END GROUP
  .debug_abbrev  0x00000745      0x1ac system\src\newlib\_startup.o
  .debug_abbrev  0x000008f1       0xec system\src\newlib\_syscalls.o
 
-.debug_line     0x00000000     0x2604
+.debug_line     0x00000000     0x2603
  *(.debug_line)
  .debug_line    0x00000000      0x41f src\lcd_stm32f0.o
- .debug_line    0x0000041f      0x60a src\main.o
- .debug_line    0x00000a29      0x3c0 system\src\cmsis\system_stm32f0xx.o
- .debug_line    0x00000de9      0x103 system\src\cmsis\vectors_stm32f0xx.o
- .debug_line    0x00000eec      0x382 system\src\cortexm\_initialize_hardware.o
- .debug_line    0x0000126e      0x63c system\src\cortexm\exception_handlers.o
- .debug_line    0x000018aa      0x322 system\src\newlib\_exit.o
- .debug_line    0x00001bcc      0x2d4 system\src\newlib\_sbrk.o
- .debug_line    0x00001ea0      0x38b system\src\newlib\_startup.o
- .debug_line    0x0000222b      0x3d9 system\src\newlib\_syscalls.o
+ .debug_line    0x0000041f      0x609 src\main.o
+ .debug_line    0x00000a28      0x3c0 system\src\cmsis\system_stm32f0xx.o
+ .debug_line    0x00000de8      0x103 system\src\cmsis\vectors_stm32f0xx.o
+ .debug_line    0x00000eeb      0x382 system\src\cortexm\_initialize_hardware.o
+ .debug_line    0x0000126d      0x63c system\src\cortexm\exception_handlers.o
+ .debug_line    0x000018a9      0x322 system\src\newlib\_exit.o
+ .debug_line    0x00001bcb      0x2d4 system\src\newlib\_sbrk.o
+ .debug_line    0x00001e9f      0x38b system\src\newlib\_startup.o
+ .debug_line    0x0000222a      0x3d9 system\src\newlib\_syscalls.o
 
 .debug_frame    0x00000000      0x820
  *(.debug_frame)

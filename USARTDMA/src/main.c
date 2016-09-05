@@ -1,18 +1,21 @@
 //********************************************************************
-//*                    EEE3017W C template                           *
+//*                    S.BUS USART RX 		                         *
 //*                    LCD test                                      *
 //*==================================================================*
-//* WRITTEN BY:    	                 		                         *
-//* DATE CREATED:                                                    *
-//* MODIFIED:                                                        *
-//*==================================================================*
-//* PROGRAMMED IN: Eclipse Luna Service Release 1 (4.4.1)            *
-//* DEV. BOARD:    UCT STM32 Development Board                       *
-//*==================================================================*
-//* DESCRIPTION:                                                     *
-//*                                                                  *
-//********************************************************************
-// INCLUDE FILES
+// Rx USART from 16 CH encoder. 6 CH pwm from RX module, encoded to
+// S.BUS w/ PWM2SBUS encoder. S.BUS is 8 25 bytes of data sent at
+// 100 000 baud (bits/s). 1st byte 0xf0 start byte.
+// 25 bytes of data structured:
+// MSB first
+// inverted
+// 1 start bit
+// 8 bits of data
+// even parity bit
+// 2 stop bits
+// buffers 25 bytes into DMA from USART then triggers interrupts,
+// subroutine checks for start byte at DMA[0] then bitshits channel
+// data into variables.
+// Channel data is little endian first
 //====================================================================
 #include "lcd_stm32f0.h"
 #include "stm32f0xx.h"
