@@ -58,10 +58,10 @@ void main (void)
 	lcd_putstring("USART");		// Display string on line 1
 	for(;;){
 		lcd_command(CURSOR_HOME);
-		sprintf(lcdstring,"ch1:%d   ch2:%d    ch3:%d     ",endian(CH[1]),endian(CH[2]),endian(CH[3]));
+		sprintf(lcdstring,"ch1:%d                  ",endian(CH[5]));
 		lcd_putstring(lcdstring);
 		lcd_command(LINE_TWO);
-		sprintf(lcdstring,"ch4:%d   ch5:%d    ch6:%d     ",endian(CH[4]),endian(CH[5]),endian(CH[6]));
+		sprintf(lcdstring,"DMA:%d                  ",DMA_GetCurrDataCounter(DMA1_Channel3));
 		lcd_putstring(lcdstring);
 	}
 }										// End of main
@@ -116,6 +116,7 @@ void DMAUSART1_config(void){
 	USART_ITConfig(USART1,USART_IT_IDLE,ENABLE);
 	DMA_Cmd(DMA1_Channel3,ENABLE);
 	USART_Cmd(USART1,ENABLE);
+	DMA_GetCurrDataCounter(DMA1_Channel3);
 }
 void init_NVIC(void){
 	NVIC_InitTypeDef NVIC_init_struct;
