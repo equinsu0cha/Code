@@ -17,7 +17,7 @@
 //====================================================================
 // GLOBAL CONSTANTS
 //====================================================================
-uint8_t ADC_Buffer[1];
+uint16_t ADC_Buffer[1];
 uint32_t servo1;
 char lcdstring[16];
 int temp=0;
@@ -52,15 +52,15 @@ void main (void)
 	for(;;){
 		lcd_command(CURSOR_HOME);
 		temp = ADC_Buffer[0];
-		sprintf(lcdstring,"ADC1:%d    ",temp);
+		servo1=25800;//(12000+(temp/4095.0)*26800); //Equation for servo, 0 degree offset at 25400
+		sprintf(lcdstring,"ADC1:%d    ",(int) servo1);
 		lcd_putstring(lcdstring);
-		servo1=((255+temp)/255.0)*(1/20.0)*64865;
 		TIM_SetCompare3(TIM2,servo1);
 		lcd_command(LINE_TWO);
 		temp = ADC_Buffer[1];
-		sprintf(lcdstring,"ADC2:%d    ",temp);
+		servo1=(2.5*(temp/4095.0)+0.5)*(1/3.03)*48484;
+		sprintf(lcdstring,"ADC2:%d    ",(int) servo1);
 		lcd_putstring(lcdstring);
-		servo1=((255+temp)/255.0)*(1/20.0)*64865;
 		TIM_SetCompare4(TIM2,servo1);
 	}
 }											// End of main
@@ -117,14 +117,14 @@ void init_TIM2(void){
 	TIM_TimeBaseInitTypeDef TIM2_basestruct;
 	TIM2_basestruct.TIM_CounterMode=TIM_CounterMode_Up;
 	TIM2_basestruct.TIM_ClockDivision= 0;
-	TIM2_basestruct.TIM_Period=64864;
-	TIM2_basestruct.TIM_Prescaler=36;
+	TIM2_basestruct.TIM_Period=48484;
+	TIM2_basestruct.TIM_Prescaler=2;
 	TIM2_basestruct.TIM_RepetitionCounter=0;
 	TIM_TimeBaseInit(TIM2,&TIM2_basestruct);
 	//OC PWM MODE
 	TIM_OCInitTypeDef TIM2_OCstruct={0,};
 	TIM2_OCstruct.TIM_OCMode=TIM_OCMode_PWM1;
-	TIM2_OCstruct.TIM_Pulse=(uint32_t) 24242;
+	TIM2_OCstruct.TIM_Pulse=(uint32_t) (25100);
 	TIM2_OCstruct.TIM_OutputState=TIM_OutputState_Enable;
 	TIM2_OCstruct.TIM_OCPolarity=TIM_OCPolarity_High;
 	TIM_OC3Init(TIM2,&TIM2_OCstruct);
@@ -138,7 +138,7 @@ void init_ADC(void){
 	ADC_DeInit(ADC1);
 	ADC_InitTypeDef ADC_struct;
 	ADC_StructInit(&ADC_struct);
-	ADC_struct.ADC_Resolution=ADC_Resolution_8b;
+	ADC_struct.ADC_Resolution=ADC_Resolution_12b;
 	ADC_struct.ADC_ContinuousConvMode=ENABLE;
 	ADC_struct.ADC_ExternalTrigConv=ADC_ExternalTrigConvEdge_None;
 	ADC_struct.ADC_DataAlign=ADC_DataAlign_Right;
@@ -157,7 +157,7 @@ void init_DMA(void){
 	DMA1_Channel1->CNDTR=0x2;
 	DMA1_Channel1->CPAR=(uint32_t) &(ADC1->DR);
 	DMA1_Channel1->CMAR=(uint32_t) &(ADC_Buffer[0]);
-	DMA1_Channel1->CCR=(DMA_M2M_Disable|DMA_Priority_VeryHigh|DMA_MemoryDataSize_Byte|DMA_PeripheralDataSize_Byte
+	DMA1_Channel1->CCR=(DMA_M2M_Disable|DMA_Priority_VeryHigh|DMA_MemoryDataSize_HalfWord|DMA_PeripheralDataSize_HalfWord
 			|DMA_MemoryInc_Enable|DMA_PeripheralInc_Disable|DMA_Mode_Circular|DMA_DIR_PeripheralSRC|DMA_CCR_EN);
 }
 void init_NVIC(void){
