@@ -1,6 +1,5 @@
 //********************************************************************
 //*                    S.BUS USART RX 		                         *
-//*                    LCD test                                      *
 //*==================================================================*
 // Rx USART from 16 CH encoder. 6 CH pwm from RX module, encoded to
 // S.BUS w/ PWM2SBUS encoder. S.BUS is 8 25 bytes of data sent at
@@ -16,6 +15,9 @@
 // subroutine checks for start byte at DMA[0] then bitshits channel
 // data into variables.
 // Channel data is little endian first
+//
+// TIM2 CH3 & CH4 are PWM outputs at 330Hz for Digital servo position
+// Signals
 //====================================================================
 #include "lcd_stm32f0.h"
 #include "stm32f0xx.h"

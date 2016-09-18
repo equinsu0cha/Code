@@ -4,6 +4,8 @@
 // Uses ADC1CH5 on PA5 in to control pulse width on output compare
 // to drive ESC speed comming out from PB10 (TIM2CH3) and reads PWM
 // input capture on PA7 (TIM3CH2)
+//
+// MISSING UPDATED INPUT CAPTURE
 //====================================================================
 #include "stdio.h"
 #include "string.h"

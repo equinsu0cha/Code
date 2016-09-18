@@ -3,6 +3,7 @@
 //*==================================================================*
 // Produces frequency varying PWM with 50% duty cycle and captures
 // wave frequency, used for BLDC RPM sensor
+// Dev code for ESC speed sensing measurement
 //====================================================================
 #include "stdio.h"
 #include "math.h"
