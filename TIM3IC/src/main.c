@@ -20,8 +20,8 @@
 // GLOBAL VARIABLES
 //====================================================================
 char lcdstring[16];
-int temp,count=0,tim3_count=0,sysclock;
-uint32_t DutyCycle,Frequency,TIM3_tick=0,CCR2_comp=0;
+int temp,count=0,tim3_count=0,sysclock,ADCval;
+uint32_t DutyCycle,Frequency1,Frequency2,TIM3_CCR1_tick=0,TIM3_CCR2_tick=0,CCR1_comp=0,CCR2_comp=0;
 //====================================================================
 // FUNCTION DECLARATIONS
 //====================================================================
@@ -48,48 +48,44 @@ void main (void){
 	//Init procedure waits for SW0
 	while(GPIO_ReadInputData(GPIOA)&GPIO_IDR_0){}
 	lcd_command(CLEAR);
+	init_ADC();
 	init_TIM2();
 	init_TIM3();
-	init_ADC();
-	uint32_t ADCval;
 	for(;;){
 		lcd_command(CURSOR_HOME);
-		ADCval = ADC_GetConversionValue(ADC1);
-		sprintf(lcdstring,"Duty:%d     ",(int) ADCval);
+		sprintf(lcdstring,"Freq1:%d     ",(int) Frequency1);
 		lcd_putstring(lcdstring);
 		lcd_command(LINE_TWO);
-		sprintf(lcdstring,"Freq:%d     ",(int)  Frequency);
+		sprintf(lcdstring,"Freq2:%d     ",(int) Frequency2);
 		lcd_putstring(lcdstring);
+		ADCval= ADC_GetConversionValue(ADC1);
+		//TIM_SetCompare3(TIM2,(uint32_t)(((ADCval/4095.0)*2+0.5)*64000/20.0));
 
 	}
 }											// End of main
 
 void init_GPIO(void){
 	RCC_AHBPeriphClockCmd((RCC_AHBPeriph_GPIOA|RCC_AHBPeriph_GPIOB),ENABLE);
-	GPIO_InitTypeDef GPIOA_struct, GPIOB_struct,GPIOA_ADC,GPIOA_TIM3,GPIOB_TIM2;
-	//GPIOA Init
+	GPIO_InitTypeDef GPIOA_struct,GPIOB_struct,GPIOA_TIM3,GPIOB_TIM2;
+	//GPIOA Init PA0-PA3 Input
 	GPIOA_struct.GPIO_Mode=GPIO_Mode_IN;
 	GPIOA_struct.GPIO_OType=GPIO_OType_PP;
 	GPIOA_struct.GPIO_Pin=(GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3);
 	GPIOA_struct.GPIO_PuPd=GPIO_PuPd_UP;
 	GPIOA_struct.GPIO_Speed=GPIO_Speed_Level_2;
 	GPIO_Init(GPIOA,&GPIOA_struct);
-	//GPIOA_ADC PA5 ADCIN5 Analogue input
-	GPIOA_ADC.GPIO_Mode=GPIO_Mode_AN;
-	GPIOA_ADC.GPIO_OType=GPIO_OType_PP;
-	GPIOA_ADC.GPIO_Pin=GPIO_Pin_5;
-	GPIOA_ADC.GPIO_PuPd=GPIO_PuPd_NOPULL;
-	GPIOA_ADC.GPIO_Speed=GPIO_Speed_Level_3;
-	GPIO_Init(GPIOA,&GPIOA_ADC);
+	//IC Capture
+	//GPIOA_TIM3 PA6 TIM3CH1 Input AF1
 	//GPIOA_TIM3 PA7 TIM3CH2 Input AF1
 	GPIOA_TIM3.GPIO_Mode=GPIO_Mode_AF;
 	GPIOA_TIM3.GPIO_OType=GPIO_OType_PP;
-	GPIOA_TIM3.GPIO_Pin=GPIO_Pin_7;
-	GPIOA_TIM3.GPIO_PuPd=GPIO_PuPd_UP;
+	GPIOA_TIM3.GPIO_Pin=(GPIO_Pin_6|GPIO_Pin_7);
+	GPIOA_TIM3.GPIO_PuPd=GPIO_PuPd_DOWN;
 	GPIOA_TIM3.GPIO_Speed=GPIO_Speed_Level_3;
 	GPIO_Init(GPIOA,&GPIOA_TIM3);
+	GPIO_PinAFConfig(GPIOA,GPIO_PinSource6,GPIO_AF_1);
 	GPIO_PinAFConfig(GPIOA,GPIO_PinSource7,GPIO_AF_1);
-	//GPIOB Init
+	//GPIOB PB0-PB7 Outputs Init
 	GPIOB_struct.GPIO_Mode=GPIO_Mode_OUT;
 	GPIOB_struct.GPIO_OType=GPIO_OType_PP;
 	GPIOB_struct.GPIO_Pin=(GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|
@@ -108,63 +104,6 @@ void init_GPIO(void){
 	GPIO_PinAFConfig(GPIOB,GPIO_PinSource10,GPIO_AF_2);
 	GPIO_PinAFConfig(GPIOB,GPIO_PinSource11,GPIO_AF_2);
 }
-
-void init_TIM2(void){
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);
-	TIM_DeInit(TIM2);
-	TIM_TimeBaseInitTypeDef TIM2_struct;
-	TIM2_struct.TIM_ClockDivision=0;
-	TIM2_struct.TIM_CounterMode=TIM_CounterMode_Up;
-	TIM2_struct.TIM_Period=64000;
-	TIM2_struct.TIM_Prescaler=14;
-	TIM2_struct.TIM_RepetitionCounter=0;
-	TIM_TimeBaseInit(TIM2,&TIM2_struct);
-	TIM_OCInitTypeDef TIM2_OCstruct={0,};
-	TIM2_OCstruct.TIM_OCMode=TIM_OCMode_PWM1;
-	TIM2_OCstruct.TIM_Pulse=(uint32_t) (0.5*(TIM2->ARR));
-	TIM2_OCstruct.TIM_OutputState=TIM_OutputState_Enable;
-	TIM2_OCstruct.TIM_OCPolarity=TIM_OCPolarity_High;
-	TIM_OC3Init(TIM2,&TIM2_OCstruct);
-	//TIM_OC4Init(TIM2,&TIM2_OCstruct);
-	TIM_ARRPreloadConfig(TIM2,ENABLE);
-	TIM_Cmd(TIM2,ENABLE);
-}
-void init_TIM3(void){
-	//Local Variables
-	int prescaler;
-	TIM_TimeBaseInitTypeDef TIM3_struct;
-	TIM_ICInitTypeDef TIM3IC2_struct;
-	NVIC_InitTypeDef NVIC_TIM3;
-	//
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3,ENABLE);
-	//Tim base structure
-	TIM3_struct.TIM_ClockDivision=0x0;
-	TIM3_struct.TIM_CounterMode=TIM_CounterMode_Up;
-	TIM3_struct.TIM_Prescaler=0;
-	TIM3_struct.TIM_Period=65535;
-	TIM_TimeBaseInit(TIM3,&TIM3_struct);
-	prescaler = (sysclock/1)-1;		//10 Mhz shooting
-	TIM_PrescalerConfig(TIM3,prescaler,TIM_PSCReloadMode_Immediate);
-	//Input capture config CH2 only
-	TIM3IC2_struct.TIM_Channel=TIM_Channel_2;
-	TIM3IC2_struct.TIM_ICFilter=0x00;
-	TIM3IC2_struct.TIM_ICPolarity=TIM_ICPolarity_Rising;
-	TIM3IC2_struct.TIM_ICPrescaler=TIM_ICPSC_DIV2;
-	TIM3IC2_struct.TIM_ICSelection=TIM_ICSelection_DirectTI;
-	TIM_PWMIConfig(TIM3,&TIM3IC2_struct);
-	TIM_SelectInputTrigger(TIM2, TIM_TS_TI2FP2);
-	TIM_SelectSlaveMode(TIM2, TIM_SlaveMode_Reset);
-	TIM_SelectMasterSlaveMode(TIM2,TIM_MasterSlaveMode_Enable);
-	//Interrupts
-	TIM_ITConfig(TIM3,(TIM_IT_Update|TIM_IT_CC2),ENABLE);
-	//Enable TIM3
-	TIM_Cmd(TIM3,ENABLE);
-	//Unmask global interrupt for TM3
-	NVIC_TIM3.NVIC_IRQChannel=TIM3_IRQn;
-	NVIC_TIM3.NVIC_IRQChannelPriority=1;
-	NVIC_TIM3.NVIC_IRQChannelCmd=ENABLE;
-	NVIC_Init(&NVIC_TIM3);
-}
 void init_ADC(void){
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1,ENABLE);
 	ADC_InitTypeDef ADC_struct;
@@ -180,22 +119,87 @@ void init_ADC(void){
 	while(!ADC_GetFlagStatus(ADC1,ADC_FLAG_ADRDY)){}
 	ADC_StartOfConversion(ADC1);
 }
+void init_TIM2(void){
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);
+	TIM_DeInit(TIM2);
+	TIM_TimeBaseInitTypeDef TIM2_struct;
+	TIM2_struct.TIM_ClockDivision=0;
+	TIM2_struct.TIM_CounterMode=TIM_CounterMode_Up;
+	TIM2_struct.TIM_Period=64000;
+	TIM2_struct.TIM_Prescaler=14;
+	TIM2_struct.TIM_RepetitionCounter=0;
+	// TIM2 OC base clock at 50 HZ
+	TIM_TimeBaseInit(TIM2,&TIM2_struct);
+	TIM_OCInitTypeDef TIM2_OCstruct={0,};
+	TIM2_OCstruct.TIM_OCMode=TIM_OCMode_PWM1;
+	TIM2_OCstruct.TIM_Pulse=(uint32_t) (0.5*(TIM2->ARR));
+	TIM2_OCstruct.TIM_OutputState=TIM_OutputState_Enable;
+	TIM2_OCstruct.TIM_OCPolarity=TIM_OCPolarity_High;
+	//Init OC3 output at 50% Duty Cycle for testing
+	TIM_OC3Init(TIM2,&TIM2_OCstruct);
+	//TIM_OC4Init(TIM2,&TIM2_OCstruct);
+	TIM_ARRPreloadConfig(TIM2,ENABLE);	//Enable autoreload for variable period
+	TIM_Cmd(TIM2,ENABLE);
+}
+void init_TIM3(void){
+	//TIM3 for CH1 & CH2 PWM INPUT CAPTURE
+	int prescaler;		//Calcs for PSC to get 10MHZ
+	TIM_TimeBaseInitTypeDef TIM3_struct;
+	TIM_ICInitTypeDef TIM3IC_struct;
+	NVIC_InitTypeDef NVIC_TIM3;
+	//
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3,ENABLE);
+	TIM3_struct.TIM_ClockDivision=0x0;
+	TIM3_struct.TIM_CounterMode=TIM_CounterMode_Up;
+	TIM3_struct.TIM_Prescaler=0;
+	TIM3_struct.TIM_Period=65535;
+	//Set base structure
+	TIM_TimeBaseInit(TIM3,&TIM3_struct);
+	prescaler = (sysclock/1)-1;		//10 Mhz shooting
+	TIM_PrescalerConfig(TIM3,prescaler,TIM_PSCReloadMode_Immediate);
+	//Input capture config CH1 CH2
+	TIM3IC_struct.TIM_Channel=(TIM_Channel_1);
+	TIM3IC_struct.TIM_ICFilter=0x00;
+	TIM3IC_struct.TIM_ICPolarity=TIM_ICPolarity_Rising;
+	TIM3IC_struct.TIM_ICPrescaler=TIM_ICPSC_DIV8;
+	TIM3IC_struct.TIM_ICSelection=TIM_ICSelection_DirectTI;
+	TIM_ICInit(TIM3,&TIM3IC_struct);
+	TIM3IC_struct.TIM_Channel=TIM_Channel_2;
+	TIM_ICInit(TIM3,&TIM3IC_struct);
+	//Interrupts
+	TIM_ITConfig(TIM3,(TIM_IT_Update|TIM_IT_CC1|TIM_IT_CC2),ENABLE);
+	//Enable TIM3
+	TIM_Cmd(TIM3,ENABLE);
+	//Unmask global interrupt for TM3
+	NVIC_TIM3.NVIC_IRQChannel=TIM3_IRQn;
+	NVIC_TIM3.NVIC_IRQChannelPriority=1;
+	NVIC_TIM3.NVIC_IRQChannelCmd=ENABLE;
+	NVIC_Init(&NVIC_TIM3);
+}
 void TIM3_IRQHandler(void){
-	uint32_t deltatick;
+	uint32_t deltatick1,deltatick2,temp1,temp2;
 	if(TIM_GetFlagStatus(TIM3,TIM_IT_Update)){
-		TIM3_tick++;
+		TIM3_CCR1_tick++;
+		TIM3_CCR2_tick++;
 		TIM_ClearITPendingBit(TIM3,TIM_IT_Update);
 	}
-	else if(TIM_GetFlagStatus(TIM3,TIM_IT_CC2)){
-		temp = TIM_GetCapture2(TIM3);
-		deltatick = temp + TIM3_tick*(TIM3->ARR) - CCR2_comp;
-		Frequency = (float) (2*(pow(10,6)*sysclock/(TIM3->PSC+1))/(deltatick));
-		TIM3_tick=0;
-		CCR2_comp=temp;
+	if(TIM_GetITStatus(TIM3,TIM_IT_CC1)&(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_6))){
+		temp1 = TIM_GetCapture1(TIM3);
+		deltatick1 = temp1 + TIM3_CCR1_tick*(TIM3->ARR) - CCR1_comp;
+		Frequency1 = (float) (8*(pow(10,6)*sysclock/(TIM3->PSC+1))/(deltatick1));
+		TIM3_CCR1_tick=0;
+		CCR1_comp=temp1;
+		TIM_ClearITPendingBit(TIM3,TIM_IT_CC1);
+	}
+	if(TIM_GetITStatus(TIM3,TIM_IT_CC2)&(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_7))){
+		temp2 = TIM_GetCapture2(TIM3);
+		deltatick2 = temp2 + TIM3_CCR2_tick*(TIM3->ARR) - CCR2_comp;
+		Frequency2 = (float) (8*(pow(10,6)*sysclock/(TIM3->PSC+1))/(deltatick2));
+		TIM3_CCR2_tick=0;
+		CCR2_comp=temp2;
 		TIM_ClearITPendingBit(TIM3,TIM_IT_CC2);
 	}
 }
-
 //********************************************************************
 // END OF PROGRAM
 //********************************************************************
