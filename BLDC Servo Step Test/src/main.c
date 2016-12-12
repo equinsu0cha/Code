@@ -185,7 +185,7 @@ void init_TIM2(void){
 	TIM_TimeBaseInit(TIM2,&TIM2_struct);
 	TIM_OCInitTypeDef TIM2_OCstruct={0,};
 	TIM2_OCstruct.TIM_OCMode=TIM_OCMode_PWM1;
-	TIM2_OCstruct.TIM_Pulse=(int)(16000);
+	TIM2_OCstruct.TIM_Pulse=(int)(26500);
 	TIM2_OCstruct.TIM_OutputState=TIM_OutputState_Enable;
 	TIM2_OCstruct.TIM_OCPolarity=TIM_OCPolarity_High;
 	//Init OC3 output at 50% Duty Cycle for testing
@@ -246,7 +246,7 @@ void init_TIM17(void){
 	TIM_Cmd(TIM17,ENABLE);
 }
 void EXTI0_1_IRQHandler(void){
-	TIM_SetCompare3(TIM2,28800);
+	TIM_SetCompare3(TIM2,17600);
 	EXTI_ClearITPendingBit(EXTI_Line1);
 }
 void TIM14_IRQHandler(void){
