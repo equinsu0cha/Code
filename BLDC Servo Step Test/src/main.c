@@ -46,7 +46,7 @@ void main (void){
 	RCC_GetClocksFreq(&CLK);
 	sysclock= (CLK.SYSCLK_Frequency)/((float)(pow(10,6)));
 	//Sys clocks in MHz
-	sprintf(lcdstring,"%d MHz",sysclock);
+	sprintf(lcdstring,"CLK %d MHz",sysclock);
 	lcd_putstring(lcdstring);
 	lcd_command(LINE_TWO);
 	lcd_putstring("Servo Step Test, SW0");
