@@ -15,8 +15,8 @@
 #include "stm32f0xx_gpio.h"
 #include "stm32f0xx_adc.h"
 //Global Variables
-char lcdstring[16];
-int sysclock,temp=39500;
+char lcdstring[16],usart_char[16];;
+int sysclock,temp=39500,tmr=0;
 uint32_t ADCval;
 //Function Declarations
 void init_GPIO(void);
@@ -25,6 +25,9 @@ void ADC_NVIC(void);
 void init_TIM2(void);
 void init_TIM14(void);
 void TIM14_NVIC(void);
+void init_USART1(void);
+void set_servo(float degree);
+void send_packet(const char *str);
 //Main Loops
 void main(void){
 	//Init primary functions
@@ -47,17 +50,17 @@ void main(void){
 	//Init secondary functions
 	init_ADC();
 	init_TIM2();
+	init_USART1();
 	init_TIM14();
 	// Start ADC
 	ADC_StartOfConversion(ADC1);
 	//For Loop
 	for(;;){
-		int deg;
+		int cmddeg,deg;
 		lcd_command(CURSOR_HOME);
-		sprintf(lcdstring,"ADC:%d       ",((int) ADCval));
+		sprintf(lcdstring,"DEG:%d       ",(int)(ADCval));
 		lcd_putstring(lcdstring);
-		deg = (temp*3/(48*pow(10,6))*129.12)*1000-82.64;
-		sprintf(lcdstring,"deg:%d       ",temp);
+		sprintf(lcdstring,"CMD:%d       ",(int)(TIM2->CCR3));
 		lcd_command(LINE_TWO);
 		lcd_putstring(lcdstring);
 	}
@@ -65,7 +68,7 @@ void main(void){
 
 void init_GPIO(void){
 	RCC_AHBPeriphClockCmd((RCC_AHBENR_GPIOAEN|RCC_AHBENR_GPIOBEN),ENABLE);
-	GPIO_InitTypeDef GPIOA_struct,GPIOB_struct,GPIOAADC1_struct,GPIOBTIM2_struct;
+	GPIO_InitTypeDef GPIOA_struct,GPIOB_struct,GPIOAADC1_struct,GPIOAUSART,GPIOBTIM2_struct;
 	// GPIOA PA0-PA2 Inputs
 	GPIOA_struct.GPIO_Mode=GPIO_Mode_IN;
 	GPIOA_struct.GPIO_OType=GPIO_OType_PP;
@@ -80,6 +83,15 @@ void init_GPIO(void){
 	GPIOAADC1_struct.GPIO_PuPd=GPIO_PuPd_UP;
 	GPIOAADC1_struct.GPIO_Speed=GPIO_Speed_Level_3;
 	GPIO_Init(GPIOA,&GPIOAADC1_struct);
+	//PA9-PA10 USART1 RX/TX
+	GPIOAUSART.GPIO_Mode=GPIO_Mode_AF;
+	GPIOAUSART.GPIO_OType=GPIO_OType_PP;
+	GPIOAUSART.GPIO_Pin=(GPIO_Pin_9|GPIO_Pin_10);
+	GPIOAUSART.GPIO_PuPd=GPIO_PuPd_NOPULL;
+	GPIOAUSART.GPIO_Speed=GPIO_Speed_Level_3;
+	GPIO_Init(GPIOA,&GPIOAUSART);
+	GPIO_PinAFConfig(GPIOA,GPIO_PinSource9,GPIO_AF_1);
+	GPIO_PinAFConfig(GPIOA,GPIO_PinSource10,GPIO_AF_1);
 	// GPIOB PB0-PB7 Outputs Init
 	GPIOB_struct.GPIO_Mode=GPIO_Mode_OUT;
 	GPIOB_struct.GPIO_OType=GPIO_OType_PP;
@@ -151,7 +163,7 @@ void init_TIM14(void){
 	TIM14_struct.TIM_ClockDivision=0x0;
 	TIM14_struct.TIM_CounterMode=TIM_CounterMode_Up;
 	TIM14_struct.TIM_Period=60000;
-	TIM14_struct.TIM_Prescaler=7;
+	TIM14_struct.TIM_Prescaler=1024;
 	TIM14_struct.TIM_RepetitionCounter=0;
 	TIM_TimeBaseInit(TIM14,&TIM14_struct);
 	TIM_ITConfig(TIM14,TIM_IT_Update,ENABLE);
@@ -166,13 +178,49 @@ void TIM14_NVIC(void){
 	NVIC_Init(&NVIC_TIM14);
 }
 void TIM14_IRQHandler(void){
-	if(temp<39500){
-		temp+=5;
+	tmr++;
+	if(temp<90){
+		temp+=15;
 	}
 	else{
-		temp = 11800;
+		temp = -90;
 	}
-	TIM_SetCompare3(TIM2,temp);
+	set_servo(temp);
+	sprintf(usart_char,"%d\n", 240);
+	send_packet(usart_char);
+	sprintf(usart_char,"%d\n",tmr);
+	send_packet(usart_char);
+	sprintf(usart_char,"%d\n",(int) (ADCval));
+	send_packet(usart_char);
+	sprintf(usart_char,"%d\n",(int) (TIM2->CCR3));
+	send_packet(usart_char);
 	TIM_ClearITPendingBit(TIM14,TIM_IT_Update);
+}
+void init_USART1(void){
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,ENABLE);
+	USART_InitTypeDef USART1_struct;
+	USART1_struct.USART_BaudRate=115200;
+	USART1_struct.USART_HardwareFlowControl=USART_HardwareFlowControl_None;
+	USART1_struct.USART_Mode=(USART_Mode_Rx|USART_Mode_Tx);
+	USART1_struct.USART_Parity=USART_Parity_No;
+	USART1_struct.USART_StopBits=USART_StopBits_2;
+	USART1_struct.USART_WordLength=USART_WordLength_8b;
+	USART_Init(USART1,&USART1_struct);
+	USART_Cmd(USART1,ENABLE);
+}
+void set_servo(float degree){
+	if(degree<0){
+		TIM_SetCompare3(TIM2,(int) (10600*(degree+216.5)/90));
+	}
+	if(degree>=0){
+		TIM_SetCompare3(TIM2,(int) (13000*(degree+176.53)/90));
+	}
+
+}
+void send_packet(const char *str){
+	while(*str){
+		while(USART_GetFlagStatus(USART1,USART_FLAG_TXE)==0);
+		USART_SendData(USART1,*str++);
+	}
 }
 // ----------------------------------------------------------------------------
