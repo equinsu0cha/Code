@@ -17,14 +17,17 @@
 //Global Variables
 char lcdstring[16],usart_char[16];;
 int sysclock,temp=39500,tmr=0;
-uint32_t ADCval;
+uint16_t ADC_Buffer[1];
 //Function Declarations
 void init_GPIO(void);
 void init_ADC(void);
 void ADC_NVIC(void);
+void init_DMA(void);
 void init_TIM2(void);
 void init_TIM14(void);
 void TIM14_NVIC(void);
+void init_EXTI(void);
+void EXTI_NVIC(void);
 void init_USART1(void);
 void set_servo(float degree);
 void send_packet(const char *str);
@@ -49,18 +52,20 @@ void main(void){
 	GPIO_Write(GPIOB,0xff);
 	//Init secondary functions
 	init_ADC();
+	init_DMA();
 	init_TIM2();
+	init_EXTI();
 	init_USART1();
 	init_TIM14();
 	// Start ADC
 	ADC_StartOfConversion(ADC1);
 	//For Loop
+	set_servo(0);
 	for(;;){
-		int cmddeg,deg;
 		lcd_command(CURSOR_HOME);
-		sprintf(lcdstring,"DEG:%d       ",(int)(ADCval));
+		sprintf(lcdstring,"DEG:%d       ",(int)(ADC_Buffer[0]));
 		lcd_putstring(lcdstring);
-		sprintf(lcdstring,"CMD:%d       ",(int)(TIM2->CCR3));
+		sprintf(lcdstring,"CMD:%d       ",(int)(ADC_Buffer[1]));
 		lcd_command(LINE_TWO);
 		lcd_putstring(lcdstring);
 	}
@@ -76,10 +81,10 @@ void init_GPIO(void){
 	GPIOA_struct.GPIO_PuPd=GPIO_PuPd_UP;
 	GPIOA_struct.GPIO_Speed=GPIO_Speed_Level_2;
 	GPIO_Init(GPIOA,&GPIOA_struct);
-	// GPIOA PA5 ADC1CH5 input
+	// GPIOA PA5-PA6 ADC1CH5-ADC1CH6 input
 	GPIOAADC1_struct.GPIO_Mode=GPIO_Mode_AN;
 	GPIOAADC1_struct.GPIO_OType=GPIO_OType_PP;
-	GPIOAADC1_struct.GPIO_Pin=GPIO_Pin_5;
+	GPIOAADC1_struct.GPIO_Pin=(GPIO_Pin_5|GPIO_Pin_6);
 	GPIOAADC1_struct.GPIO_PuPd=GPIO_PuPd_UP;
 	GPIOAADC1_struct.GPIO_Speed=GPIO_Speed_Level_3;
 	GPIO_Init(GPIOA,&GPIOAADC1_struct);
@@ -111,17 +116,24 @@ void init_GPIO(void){
 
 void init_ADC(void){
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1,ENABLE);
+	// Enable ADC1 in 10 bit mode, CH5 and CH6 on PA5 and PA6 respectively
 	ADC_InitTypeDef ADC1_struct;
 	ADC1_struct.ADC_ContinuousConvMode=DISABLE;
 	ADC1_struct.ADC_DataAlign=ADC_DataAlign_Right;
 	ADC1_struct.ADC_ExternalTrigConv=ADC_ExternalTrigConvEdge_None;
 	ADC1_struct.ADC_ExternalTrigConvEdge=ADC_ExternalTrigConvEdge_None;
-	ADC1_struct.ADC_Resolution=ADC_Resolution_10b;
+	ADC1_struct.ADC_Resolution=ADC_Resolution_12b;
 	ADC1_struct.ADC_ScanDirection=ADC_ScanDirection_Upward;
 	ADC_Init(ADC1,&ADC1_struct);
 	ADC_ChannelConfig(ADC1,ADC_Channel_5,ADC_SampleTime_55_5Cycles);
+	ADC_ChannelConfig(ADC1,ADC_Channel_6,ADC_SampleTime_55_5Cycles);
+	// Enable end of conversion interrupt
 	ADC_ITConfig(ADC1,ADC_IT_EOC,ENABLE);
 	ADC_NVIC();
+	// Use DMA for both channels, oneshot mode, reset in ADC EOC interrupt
+	ADC_DMARequestModeConfig(ADC1,ADC_DMAMode_Circular);
+	ADC_DMACmd(ADC1,ENABLE);
+	// Enable ADC
 	ADC_Cmd(ADC1,ENABLE);
 	while(ADC_GetFlagStatus(ADC1,ADC_FLAG_ADRDY)){}
 }
@@ -133,9 +145,17 @@ void ADC_NVIC(void){
 	NVIC_Init(&ADCNVIC);
 }
 void ADC1_COMP_IRQHandler(void){
-	ADCval=ADC_GetConversionValue(ADC1);
 	ADC_StartOfConversion(ADC1);
 	ADC_ClearITPendingBit(ADC1,ADC_IT_EOC);
+}
+void init_DMA(void){
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,1);
+	//Enable DMA for 2 channel ADC input
+	DMA1_Channel1->CNDTR=0x2;
+	DMA1_Channel1->CPAR=(uint32_t) &(ADC1->DR);
+	DMA1_Channel1->CMAR=(uint32_t) &(ADC_Buffer[0]);
+	DMA1_Channel1->CCR=(DMA_M2M_Disable|DMA_Priority_VeryHigh|DMA_MemoryDataSize_HalfWord|DMA_PeripheralDataSize_HalfWord
+			|DMA_MemoryInc_Enable|DMA_PeripheralInc_Disable|DMA_Mode_Circular|DMA_DIR_PeripheralSRC|DMA_CCR_EN);
 }
 void init_TIM2(void){
 	RCC_APB1PeriphClockCmd(RCC_APB1ENR_TIM2EN,ENABLE);
@@ -163,7 +183,7 @@ void init_TIM14(void){
 	TIM14_struct.TIM_ClockDivision=0x0;
 	TIM14_struct.TIM_CounterMode=TIM_CounterMode_Up;
 	TIM14_struct.TIM_Period=60000;
-	TIM14_struct.TIM_Prescaler=1024;
+	TIM14_struct.TIM_Prescaler=0;
 	TIM14_struct.TIM_RepetitionCounter=0;
 	TIM_TimeBaseInit(TIM14,&TIM14_struct);
 	TIM_ITConfig(TIM14,TIM_IT_Update,ENABLE);
@@ -179,22 +199,39 @@ void TIM14_NVIC(void){
 }
 void TIM14_IRQHandler(void){
 	tmr++;
-	if(temp<90){
-		temp+=15;
-	}
-	else{
-		temp = -90;
-	}
-	set_servo(temp);
 	sprintf(usart_char,"%d\n", 240);
 	send_packet(usart_char);
-	sprintf(usart_char,"%d\n",tmr);
+	//sprintf(usart_char,"%d\n",tmr);
+	//send_packet(usart_char);
+	sprintf(usart_char,"%d\n",(int) (ADC_Buffer[0]));
 	send_packet(usart_char);
-	sprintf(usart_char,"%d\n",(int) (ADCval));
-	send_packet(usart_char);
-	sprintf(usart_char,"%d\n",(int) (TIM2->CCR3));
-	send_packet(usart_char);
+	//sprintf(usart_char,"%d\n",(int) (ADC_Buffer[1]));
+	//send_packet(usart_char);
+	//sprintf(usart_char,"%d\n",(int) (TIM2->CCR3));
+	//send_packet(usart_char);
 	TIM_ClearITPendingBit(TIM14,TIM_IT_Update);
+}
+void init_EXTI(void){
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG,ENABLE);
+	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA,EXTI_PinSource1);
+	EXTI_InitTypeDef EXTI_struct;
+	EXTI_struct.EXTI_Line=EXTI_Line1;
+	EXTI_struct.EXTI_LineCmd=ENABLE;
+	EXTI_struct.EXTI_Mode=EXTI_Mode_Interrupt;
+	EXTI_struct.EXTI_Trigger=EXTI_Trigger_Rising;
+	EXTI_Init(&EXTI_struct);
+	EXTI_NVIC();
+}
+void EXTI_NVIC(void){
+	NVIC_InitTypeDef NVIC_EXTI;
+	NVIC_EXTI.NVIC_IRQChannel=EXTI0_1_IRQn;
+	NVIC_EXTI.NVIC_IRQChannelPriority=1;
+	NVIC_EXTI.NVIC_IRQChannelCmd=ENABLE;
+	NVIC_Init(&NVIC_EXTI);
+}
+void EXTI0_1_IRQHandler(void){
+	set_servo(-45);
+	EXTI_ClearITPendingBit(EXTI_Line1);
 }
 void init_USART1(void){
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,ENABLE);
@@ -208,6 +245,7 @@ void init_USART1(void){
 	USART_Init(USART1,&USART1_struct);
 	USART_Cmd(USART1,ENABLE);
 }
+// Set servo position, connected to TIM2CH3 output compare
 void set_servo(float degree){
 	if(degree<0){
 		TIM_SetCompare3(TIM2,(int) (10600*(degree+216.5)/90));
@@ -215,8 +253,8 @@ void set_servo(float degree){
 	if(degree>=0){
 		TIM_SetCompare3(TIM2,(int) (13000*(degree+176.53)/90));
 	}
-
 }
+//Send USART packet
 void send_packet(const char *str){
 	while(*str){
 		while(USART_GetFlagStatus(USART1,USART_FLAG_TXE)==0);
