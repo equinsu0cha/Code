@@ -65,9 +65,9 @@ void main(void){
 		lcd_command(CURSOR_HOME);
 		sprintf(lcdstring,"DEG:%d       ",(int)(ADC_Buffer[0]));
 		lcd_putstring(lcdstring);
-		sprintf(lcdstring,"CMD:%d       ",(int)(ADC_Buffer[1]));
-		lcd_command(LINE_TWO);
-		lcd_putstring(lcdstring);
+		//sprintf(lcdstring,"CMD:%d       ",(int)(ADC_Buffer[1]));
+		//lcd_command(LINE_TWO);
+		//lcd_putstring(lcdstring);
 	}
 }
 
@@ -126,7 +126,7 @@ void init_ADC(void){
 	ADC1_struct.ADC_ScanDirection=ADC_ScanDirection_Upward;
 	ADC_Init(ADC1,&ADC1_struct);
 	ADC_ChannelConfig(ADC1,ADC_Channel_5,ADC_SampleTime_55_5Cycles);
-	ADC_ChannelConfig(ADC1,ADC_Channel_6,ADC_SampleTime_55_5Cycles);
+	//ADC_ChannelConfig(ADC1,ADC_Channel_6,ADC_SampleTime_55_5Cycles);
 	// Enable end of conversion interrupt
 	ADC_ITConfig(ADC1,ADC_IT_EOC,ENABLE);
 	ADC_NVIC();
@@ -151,7 +151,7 @@ void ADC1_COMP_IRQHandler(void){
 void init_DMA(void){
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,1);
 	//Enable DMA for 2 channel ADC input
-	DMA1_Channel1->CNDTR=0x2;
+	DMA1_Channel1->CNDTR=0x1;
 	DMA1_Channel1->CPAR=(uint32_t) &(ADC1->DR);
 	DMA1_Channel1->CMAR=(uint32_t) &(ADC_Buffer[0]);
 	DMA1_Channel1->CCR=(DMA_M2M_Disable|DMA_Priority_VeryHigh|DMA_MemoryDataSize_HalfWord|DMA_PeripheralDataSize_HalfWord
@@ -230,13 +230,13 @@ void EXTI_NVIC(void){
 	NVIC_Init(&NVIC_EXTI);
 }
 void EXTI0_1_IRQHandler(void){
-	set_servo(-45);
+	set_servo(90);
 	EXTI_ClearITPendingBit(EXTI_Line1);
 }
 void init_USART1(void){
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,ENABLE);
 	USART_InitTypeDef USART1_struct;
-	USART1_struct.USART_BaudRate=115200;
+	USART1_struct.USART_BaudRate=345600;
 	USART1_struct.USART_HardwareFlowControl=USART_HardwareFlowControl_None;
 	USART1_struct.USART_Mode=(USART_Mode_Rx|USART_Mode_Tx);
 	USART1_struct.USART_Parity=USART_Parity_No;
