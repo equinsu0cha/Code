@@ -16,7 +16,7 @@
 #include "stm32f0xx_adc.h"
 //Global Variables
 char lcdstring[16],usart_char[16];;
-int sysclock,temp=39500,tmr=0;
+int sysclock,temp=14900,tmr=0,dir=1;
 uint16_t ADC_Buffer[1];
 //Function Declarations
 void init_GPIO(void);
@@ -183,7 +183,7 @@ void init_TIM14(void){
 	TIM14_struct.TIM_ClockDivision=0x0;
 	TIM14_struct.TIM_CounterMode=TIM_CounterMode_Up;
 	TIM14_struct.TIM_Period=60000;
-	TIM14_struct.TIM_Prescaler=0;
+	TIM14_struct.TIM_Prescaler=127;
 	TIM14_struct.TIM_RepetitionCounter=0;
 	TIM_TimeBaseInit(TIM14,&TIM14_struct);
 	TIM_ITConfig(TIM14,TIM_IT_Update,ENABLE);
@@ -199,6 +199,13 @@ void TIM14_NVIC(void){
 }
 void TIM14_IRQHandler(void){
 	tmr++;
+	if(temp>=38500){
+		dir=-1;
+	}
+	if(temp<=14900){
+		dir=1;
+	}
+	temp+=dir*100;
 	sprintf(usart_char,"%d\n", 240);
 	send_packet(usart_char);
 	//sprintf(usart_char,"%d\n",tmr);
@@ -207,8 +214,9 @@ void TIM14_IRQHandler(void){
 	send_packet(usart_char);
 	//sprintf(usart_char,"%d\n",(int) (ADC_Buffer[1]));
 	//send_packet(usart_char);
-	//sprintf(usart_char,"%d\n",(int) (TIM2->CCR3));
-	//send_packet(usart_char);
+	sprintf(usart_char,"%d\n",(int) (TIM2->CCR3));
+	send_packet(usart_char);
+	TIM_SetCompare3(TIM2,temp);
 	TIM_ClearITPendingBit(TIM14,TIM_IT_Update);
 }
 void init_EXTI(void){
