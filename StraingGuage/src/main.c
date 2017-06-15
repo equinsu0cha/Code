@@ -24,6 +24,8 @@ void init_ADC(void);
 void ADC_NVIC(void);
 void init_DMA(void);
 void init_TIM2(void);
+void init_TIM3(void);
+void TIM3_NVIC(void);
 void init_TIM14(void);
 void TIM14_NVIC(void);
 void init_EXTI(void);
@@ -54,6 +56,7 @@ void main(void){
 	init_ADC();
 	init_DMA();
 	init_TIM2();
+	init_TIM3();
 	init_EXTI();
 	init_USART1();
 	init_TIM14();
@@ -77,7 +80,7 @@ void init_GPIO(void){
 	// GPIOA PA0-PA2 Inputs
 	GPIOA_struct.GPIO_Mode=GPIO_Mode_IN;
 	GPIOA_struct.GPIO_OType=GPIO_OType_PP;
-	GPIOA_struct.GPIO_Pin=(GPIO_Pin_0|GPIO_Pin_1);
+	GPIOA_struct.GPIO_Pin=(GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2);
 	GPIOA_struct.GPIO_PuPd=GPIO_PuPd_UP;
 	GPIOA_struct.GPIO_Speed=GPIO_Speed_Level_2;
 	GPIO_Init(GPIOA,&GPIOA_struct);
@@ -177,13 +180,45 @@ void init_TIM2(void){
 	TIM_OC3Init(TIM2,&TIM2_OCstruct);
 	TIM_Cmd(TIM2,ENABLE);
 }
+void init_TIM3(void){
+	RCC_APB1PeriphClockCmd(RCC_APB1ENR_TIM3EN,ENABLE);
+	TIM_TimeBaseInitTypeDef TIM3_struct;
+	TIM3_struct.TIM_ClockDivision=0;
+	TIM3_struct.TIM_CounterMode=TIM_CounterMode_Up;
+	TIM3_struct.TIM_Period=60000;
+	TIM3_struct.TIM_Prescaler=255;
+	TIM3_struct.TIM_RepetitionCounter=0;
+	TIM_TimeBaseInit(TIM3,&TIM3_struct);
+	TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE);
+	TIM3_NVIC();
+	//TIM_Cmd(TIM3,ENABLE);
+}
+void TIM3_NVIC(void){
+	NVIC_InitTypeDef NVIC_TIM3;
+	NVIC_TIM3.NVIC_IRQChannel=TIM3_IRQn;
+	NVIC_TIM3.NVIC_IRQChannelPriority=0;
+	NVIC_TIM3.NVIC_IRQChannelCmd=ENABLE;
+	NVIC_Init(&NVIC_TIM3);
+}
+void TIM3_IRQHandler(void){
+	tmr++;
+	if(temp>=38500){
+		dir=-1;
+	}
+	if(temp<=14900){
+		dir=1;
+	}
+	temp+=dir*100;
+	TIM_SetCompare3(TIM2,temp);
+	TIM_ClearITPendingBit(TIM3,TIM_IT_Update);
+}
 void init_TIM14(void){
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM14,ENABLE);
 	TIM_TimeBaseInitTypeDef TIM14_struct;
 	TIM14_struct.TIM_ClockDivision=0x0;
 	TIM14_struct.TIM_CounterMode=TIM_CounterMode_Up;
-	TIM14_struct.TIM_Period=60000;
-	TIM14_struct.TIM_Prescaler=127;
+	TIM14_struct.TIM_Period=30000;
+	TIM14_struct.TIM_Prescaler=0;
 	TIM14_struct.TIM_RepetitionCounter=0;
 	TIM_TimeBaseInit(TIM14,&TIM14_struct);
 	TIM_ITConfig(TIM14,TIM_IT_Update,ENABLE);
@@ -198,14 +233,7 @@ void TIM14_NVIC(void){
 	NVIC_Init(&NVIC_TIM14);
 }
 void TIM14_IRQHandler(void){
-	tmr++;
-	if(temp>=38500){
-		dir=-1;
-	}
-	if(temp<=14900){
-		dir=1;
-	}
-	temp+=dir*100;
+
 	sprintf(usart_char,"%d\n", 240);
 	send_packet(usart_char);
 	//sprintf(usart_char,"%d\n",tmr);
@@ -214,16 +242,16 @@ void TIM14_IRQHandler(void){
 	send_packet(usart_char);
 	//sprintf(usart_char,"%d\n",(int) (ADC_Buffer[1]));
 	//send_packet(usart_char);
-	sprintf(usart_char,"%d\n",(int) (TIM2->CCR3));
-	send_packet(usart_char);
-	TIM_SetCompare3(TIM2,temp);
+	//sprintf(usart_char,"%d\n",(int) (TIM2->CCR3));
+	//send_packet(usart_char);
 	TIM_ClearITPendingBit(TIM14,TIM_IT_Update);
 }
 void init_EXTI(void){
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG,ENABLE);
 	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA,EXTI_PinSource1);
+	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA,EXTI_PinSource2);
 	EXTI_InitTypeDef EXTI_struct;
-	EXTI_struct.EXTI_Line=EXTI_Line1;
+	EXTI_struct.EXTI_Line=(EXTI_Line1|EXTI_Line2);
 	EXTI_struct.EXTI_LineCmd=ENABLE;
 	EXTI_struct.EXTI_Mode=EXTI_Mode_Interrupt;
 	EXTI_struct.EXTI_Trigger=EXTI_Trigger_Rising;
@@ -236,10 +264,20 @@ void EXTI_NVIC(void){
 	NVIC_EXTI.NVIC_IRQChannelPriority=1;
 	NVIC_EXTI.NVIC_IRQChannelCmd=ENABLE;
 	NVIC_Init(&NVIC_EXTI);
+	NVIC_EXTI.NVIC_IRQChannel=EXTI2_3_IRQn;
+	NVIC_Init(&NVIC_EXTI);
 }
 void EXTI0_1_IRQHandler(void){
-	set_servo(90);
-	EXTI_ClearITPendingBit(EXTI_Line1);
+	if(EXTI_GetFlagStatus(EXTI_Line1)){
+		set_servo(0);
+		EXTI_ClearITPendingBit(EXTI_Line1);
+	}
+}
+void EXTI2_3_IRQHandler(void){
+	if(EXTI_GetFlagStatus(EXTI_Line2)){
+		set_servo(-89);
+		EXTI_ClearITPendingBit(EXTI_Line2);
+	}
 }
 void init_USART1(void){
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,ENABLE);
