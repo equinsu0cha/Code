@@ -16,7 +16,7 @@
 #include "stm32f0xx_adc.h"
 //Global Variables
 char lcdstring[16],usart_char[16];;
-int sysclock,temp=14900,tmr=0,dir=1;
+int sysclock,temp=14900,tmr=0,dir=1,TIM3OC2=2500;
 uint16_t ADC_Buffer[1];
 //Function Declarations
 void init_GPIO(void);
@@ -25,9 +25,10 @@ void ADC_NVIC(void);
 void init_DMA(void);
 void init_TIM2(void);
 void init_TIM3(void);
-void TIM3_NVIC(void);
 void init_TIM14(void);
 void TIM14_NVIC(void);
+void init_TIM17(void);
+void TIM17_NVIC(void);
 void init_EXTI(void);
 void EXTI_NVIC(void);
 void init_USART1(void);
@@ -51,19 +52,32 @@ void main(void){
 	while((GPIO_ReadInputData(GPIOA)&GPIO_IDR_0)){}
 	//Run loop check
 	lcd_command(CLEAR);
+	lcd_putstring("Init");
 	GPIO_Write(GPIOB,0xff);
 	//Init secondary functions
 	init_ADC();
 	init_DMA();
 	init_TIM2();
 	init_TIM3();
+	init_TIM14();
+	init_TIM17();
 	init_EXTI();
 	init_USART1();
-	init_TIM14();
 	// Start ADC
 	ADC_StartOfConversion(ADC1);
 	//For Loop
 	set_servo(0);
+	while((GPIO_ReadInputData(GPIOA)&GPIO_IDR_0)){}
+	lcd_command(CLEAR);
+	lcd_putstring("Spin up");
+	while(TIM3OC2<=3800){
+		TIM3OC2+=10;
+		TIM_SetCompare2(TIM3,TIM3OC2);
+		GPIO_Write(GPIOB,(uint16_t)((255*TIM3OC2/3800)));
+		for(int x=0;x<=255;x++){
+			for(int y=0;y<=255;y++){}
+		}
+	}
 	for(;;){
 		lcd_command(CURSOR_HOME);
 		sprintf(lcdstring,"DEG:%d       ",(int)(ADC_Buffer[0]));
@@ -110,11 +124,12 @@ void init_GPIO(void){
 	// GPIOB PB10 TIM2CH3 PWM output
 	GPIOBTIM2_struct.GPIO_Mode=GPIO_Mode_AF;
 	GPIOBTIM2_struct.GPIO_OType=GPIO_OType_PP;
-	GPIOBTIM2_struct.GPIO_Pin=(GPIO_Pin_10);
+	GPIOBTIM2_struct.GPIO_Pin=(GPIO_Pin_10|GPIO_Pin_11);
 	GPIOBTIM2_struct.GPIO_PuPd=GPIO_PuPd_NOPULL;
 	GPIOBTIM2_struct.GPIO_Speed=GPIO_Speed_Level_3;
 	GPIO_Init(GPIOB,&GPIOBTIM2_struct);
 	GPIO_PinAFConfig(GPIOB,GPIO_PinSource10,GPIO_AF_2);
+	GPIO_PinAFConfig(GPIOB,GPIO_PinSource11,GPIO_AF_2);
 }
 
 void init_ADC(void){
@@ -181,36 +196,23 @@ void init_TIM2(void){
 	TIM_Cmd(TIM2,ENABLE);
 }
 void init_TIM3(void){
-	RCC_APB1PeriphClockCmd(RCC_APB1ENR_TIM3EN,ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3,ENABLE);
 	TIM_TimeBaseInitTypeDef TIM3_struct;
 	TIM3_struct.TIM_ClockDivision=0;
 	TIM3_struct.TIM_CounterMode=TIM_CounterMode_Up;
-	TIM3_struct.TIM_Period=60000;
-	TIM3_struct.TIM_Prescaler=255;
+	TIM3_struct.TIM_Period=64000;
+	TIM3_struct.TIM_Prescaler=14;
 	TIM3_struct.TIM_RepetitionCounter=0;
+	// TIM3 OC base clock at 50 HZ
 	TIM_TimeBaseInit(TIM3,&TIM3_struct);
-	TIM_ITConfig(TIM3,TIM_IT_Update,ENABLE);
-	TIM3_NVIC();
-	//TIM_Cmd(TIM3,ENABLE);
-}
-void TIM3_NVIC(void){
-	NVIC_InitTypeDef NVIC_TIM3;
-	NVIC_TIM3.NVIC_IRQChannel=TIM3_IRQn;
-	NVIC_TIM3.NVIC_IRQChannelPriority=0;
-	NVIC_TIM3.NVIC_IRQChannelCmd=ENABLE;
-	NVIC_Init(&NVIC_TIM3);
-}
-void TIM3_IRQHandler(void){
-	tmr++;
-	if(temp>=38500){
-		dir=-1;
-	}
-	if(temp<=14900){
-		dir=1;
-	}
-	temp+=dir*100;
-	TIM_SetCompare3(TIM2,temp);
-	TIM_ClearITPendingBit(TIM3,TIM_IT_Update);
+	TIM_OCInitTypeDef TIM3_OCstruct={0,};
+	TIM3_OCstruct.TIM_OCMode=TIM_OCMode_PWM1;
+	TIM3_OCstruct.TIM_Pulse=(int)(TIM3OC2);
+	TIM3_OCstruct.TIM_OutputState=TIM_OutputState_Enable;
+	TIM3_OCstruct.TIM_OCPolarity=TIM_OCPolarity_High;
+	//Init OC2 output at 50% Duty Cycle for testing
+	TIM_OC2Init(TIM3,&TIM3_OCstruct);
+	TIM_Cmd(TIM3,ENABLE);
 }
 void init_TIM14(void){
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM14,ENABLE);
@@ -245,6 +247,29 @@ void TIM14_IRQHandler(void){
 	//sprintf(usart_char,"%d\n",(int) (TIM2->CCR3));
 	//send_packet(usart_char);
 	TIM_ClearITPendingBit(TIM14,TIM_IT_Update);
+}
+void init_TIM17(void){
+	RCC_APB2PeriphClockCmd(RCC_APB2ENR_TIM17EN,ENABLE);
+	TIM_TimeBaseInitTypeDef TIM17_struct;
+	TIM17_struct.TIM_ClockDivision=0;
+	TIM17_struct.TIM_CounterMode=TIM_CounterMode_Up;
+	TIM17_struct.TIM_Period=60000;
+	TIM17_struct.TIM_Prescaler=255;
+	TIM17_struct.TIM_RepetitionCounter=0;
+	TIM_TimeBaseInit(TIM3,&TIM17_struct);
+	TIM_ITConfig(TIM17,TIM_IT_Update,ENABLE);
+	TIM17_NVIC();
+	//TIM_Cmd(TIM3,ENABLE);
+}
+void TIM17_NVIC(void){
+	NVIC_InitTypeDef NVIC_TIM17;
+	NVIC_TIM17.NVIC_IRQChannel=TIM17_IRQn;
+	NVIC_TIM17.NVIC_IRQChannelPriority=0;
+	NVIC_TIM17.NVIC_IRQChannelCmd=ENABLE;
+	NVIC_Init(&NVIC_TIM17);
+}
+void TIM17_IRQHandler(void){
+	TIM_ClearITPendingBit(TIM17,TIM_IT_Update);
 }
 void init_EXTI(void){
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG,ENABLE);
