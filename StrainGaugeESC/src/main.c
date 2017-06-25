@@ -71,7 +71,7 @@ void main(void){
 	lcd_command(CLEAR);
 	lcd_putstring("Spin up");
 	while(TIM3OC2<=3800){
-		TIM3OC2+=10;
+		TIM3OC2++;
 		TIM_SetCompare2(TIM3,TIM3OC2);
 		GPIO_Write(GPIOB,(uint16_t)((255*TIM3OC2/3800)));
 		for(int x=0;x<=255;x++){
@@ -90,7 +90,7 @@ void main(void){
 
 void init_GPIO(void){
 	RCC_AHBPeriphClockCmd((RCC_AHBENR_GPIOAEN|RCC_AHBENR_GPIOBEN),ENABLE);
-	GPIO_InitTypeDef GPIOA_struct,GPIOB_struct,GPIOAADC1_struct,GPIOAUSART,GPIOBTIM2_struct;
+	GPIO_InitTypeDef GPIOA_struct,GPIOB_struct,GPIOAADC1_struct,GPIOAUSART,GPIOATIM3_struct,GPIOBTIM2_struct;
 	// GPIOA PA0-PA2 Inputs
 	GPIOA_struct.GPIO_Mode=GPIO_Mode_IN;
 	GPIOA_struct.GPIO_OType=GPIO_OType_PP;
@@ -105,6 +105,14 @@ void init_GPIO(void){
 	GPIOAADC1_struct.GPIO_PuPd=GPIO_PuPd_UP;
 	GPIOAADC1_struct.GPIO_Speed=GPIO_Speed_Level_3;
 	GPIO_Init(GPIOA,&GPIOAADC1_struct);
+	// GPIOA PA7 TIM3CH2 output
+	GPIOATIM3_struct.GPIO_Mode=GPIO_Mode_AF;
+	GPIOATIM3_struct.GPIO_OType=GPIO_OType_PP;
+	GPIOATIM3_struct.GPIO_Pin=GPIO_Pin_7;
+	GPIOATIM3_struct.GPIO_PuPd=GPIO_PuPd_NOPULL;
+	GPIOATIM3_struct.GPIO_Speed=GPIO_Speed_Level_3;
+	GPIO_Init(GPIOA,&GPIOATIM3_struct);
+	GPIO_PinAFConfig(GPIOA,GPIO_PinSource7,GPIO_AF_1);
 	//PA9-PA10 USART1 RX/TX
 	GPIOAUSART.GPIO_Mode=GPIO_Mode_AF;
 	GPIOAUSART.GPIO_OType=GPIO_OType_PP;
@@ -124,12 +132,11 @@ void init_GPIO(void){
 	// GPIOB PB10 TIM2CH3 PWM output
 	GPIOBTIM2_struct.GPIO_Mode=GPIO_Mode_AF;
 	GPIOBTIM2_struct.GPIO_OType=GPIO_OType_PP;
-	GPIOBTIM2_struct.GPIO_Pin=(GPIO_Pin_10|GPIO_Pin_11);
+	GPIOBTIM2_struct.GPIO_Pin=(GPIO_Pin_10);
 	GPIOBTIM2_struct.GPIO_PuPd=GPIO_PuPd_NOPULL;
 	GPIOBTIM2_struct.GPIO_Speed=GPIO_Speed_Level_3;
 	GPIO_Init(GPIOB,&GPIOBTIM2_struct);
 	GPIO_PinAFConfig(GPIOB,GPIO_PinSource10,GPIO_AF_2);
-	GPIO_PinAFConfig(GPIOB,GPIO_PinSource11,GPIO_AF_2);
 }
 
 void init_ADC(void){
@@ -207,7 +214,7 @@ void init_TIM3(void){
 	TIM_TimeBaseInit(TIM3,&TIM3_struct);
 	TIM_OCInitTypeDef TIM3_OCstruct={0,};
 	TIM3_OCstruct.TIM_OCMode=TIM_OCMode_PWM1;
-	TIM3_OCstruct.TIM_Pulse=(int)(TIM3OC2);
+	TIM3_OCstruct.TIM_Pulse=(int)(0);
 	TIM3_OCstruct.TIM_OutputState=TIM_OutputState_Enable;
 	TIM3_OCstruct.TIM_OCPolarity=TIM_OCPolarity_High;
 	//Init OC2 output at 50% Duty Cycle for testing
