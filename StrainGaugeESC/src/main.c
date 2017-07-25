@@ -1,10 +1,19 @@
 //********************************************************************
-//*							Strain Test
+//*							tau_alph step
 //*==================================================================*
-// Measures strain gauge analogue signal for torque test on ADC1CH5 input
-// from PA5.
-// Includes servo position output on timer channel
+// Steps Servo 1 (alpha) from TIM2Ch3
+// Steps Servo 2 (lambda) from TIM2CH4
+// ADC1CH5 and ADC1CH6 are input for strain guage and potentiometer respectively
+// USART1 sends TIM2CH3 OC compare value and ADC1CH5 input
+// TIM14 schedules steps in servo range and USART send packets
 //
+// Servo1 = servo_alpha
+// Servo1 range = [11800:39000]
+// Servo1 0th offset = 25500
+//
+// Servo2 = servo_lamba
+// Servo2 range = [11450:39000]
+// Servo2 0th offset = 25500
 //====================================================================
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,6 +26,10 @@
 //Global Variables
 char lcdstring[16],usart_char[16];;
 int sysclock,temp=14900,tmr=0,dir=1,TIM3OC2=2500;
+int alph_0 = 0;
+int lam_0 = 0;
+int alph_step = -90;
+int lam_step = 0;
 uint16_t ADC_Buffer[1];
 //Function Declarations
 void init_GPIO(void);
@@ -32,7 +45,8 @@ void TIM17_NVIC(void);
 void init_EXTI(void);
 void EXTI_NVIC(void);
 void init_USART1(void);
-void set_servo(float degree);
+void set_servo_alpha(float degree);
+void set_servo_lambda(float degree);
 void send_packet(const char *str);
 //Main Loops
 void main(void){
@@ -66,11 +80,12 @@ void main(void){
 	// Start ADC
 	ADC_StartOfConversion(ADC1);
 	//For Loop
-	set_servo(0);
+	set_servo_lambda(lam_0);
+	set_servo_alpha(alph_0);
 	while((GPIO_ReadInputData(GPIOA)&GPIO_IDR_0)){}
 	lcd_command(CLEAR);
 	lcd_putstring("Spin up");
-	while(TIM3OC2<=3800){
+	/*while(TIM3OC2<=3800){
 		TIM3OC2++;
 		TIM_SetCompare2(TIM3,TIM3OC2);
 		GPIO_Write(GPIOB,(uint16_t)((255*TIM3OC2/3800)));
@@ -78,6 +93,7 @@ void main(void){
 			for(int y=0;y<=255;y++){}
 		}
 	}
+	*/
 	for(;;){
 		lcd_command(CURSOR_HOME);
 		sprintf(lcdstring,"DEG:%d       ",(int)(ADC_Buffer[0]));
@@ -129,14 +145,15 @@ void init_GPIO(void){
 	GPIOB_struct.GPIO_PuPd=GPIO_PuPd_NOPULL;
 	GPIOB_struct.GPIO_Speed=GPIO_Speed_Level_2;
 	GPIO_Init(GPIOB,&GPIOB_struct);
-	// GPIOB PB10 TIM2CH3 PWM output
+	// GPIOB PB10-PB11 TIM2CH3 PWM output
 	GPIOBTIM2_struct.GPIO_Mode=GPIO_Mode_AF;
 	GPIOBTIM2_struct.GPIO_OType=GPIO_OType_PP;
-	GPIOBTIM2_struct.GPIO_Pin=(GPIO_Pin_10);
+	GPIOBTIM2_struct.GPIO_Pin=(GPIO_Pin_10|GPIO_Pin_11);
 	GPIOBTIM2_struct.GPIO_PuPd=GPIO_PuPd_NOPULL;
 	GPIOBTIM2_struct.GPIO_Speed=GPIO_Speed_Level_3;
 	GPIO_Init(GPIOB,&GPIOBTIM2_struct);
 	GPIO_PinAFConfig(GPIOB,GPIO_PinSource10,GPIO_AF_2);
+	GPIO_PinAFConfig(GPIOB,GPIO_PinSource11,GPIO_AF_2);
 }
 
 void init_ADC(void){
@@ -200,6 +217,8 @@ void init_TIM2(void){
 	TIM2_OCstruct.TIM_OCPolarity=TIM_OCPolarity_High;
 	//Init OC3 output at 50% Duty Cycle for testing
 	TIM_OC3Init(TIM2,&TIM2_OCstruct);
+	TIM_OC4Init(TIM2,&TIM2_OCstruct);
+	// OCcompare PWM mode for CH4
 	TIM_Cmd(TIM2,ENABLE);
 }
 void init_TIM3(void){
@@ -266,7 +285,7 @@ void init_TIM17(void){
 	TIM_TimeBaseInit(TIM3,&TIM17_struct);
 	TIM_ITConfig(TIM17,TIM_IT_Update,ENABLE);
 	TIM17_NVIC();
-	//TIM_Cmd(TIM3,ENABLE);
+	//TIM_Cmd(TIM17,ENABLE);
 }
 void TIM17_NVIC(void){
 	NVIC_InitTypeDef NVIC_TIM17;
@@ -301,13 +320,15 @@ void EXTI_NVIC(void){
 }
 void EXTI0_1_IRQHandler(void){
 	if(EXTI_GetFlagStatus(EXTI_Line1)){
-		set_servo(0);
+		set_servo_lambda(lam_0);
+		set_servo_alpha(alph_0);
 		EXTI_ClearITPendingBit(EXTI_Line1);
 	}
 }
 void EXTI2_3_IRQHandler(void){
 	if(EXTI_GetFlagStatus(EXTI_Line2)){
-		set_servo(-90);
+		set_servo_lambda(lam_step);
+		set_servo_alpha(alph_step);
 		EXTI_ClearITPendingBit(EXTI_Line2);
 	}
 }
@@ -324,12 +345,21 @@ void init_USART1(void){
 	USART_Cmd(USART1,ENABLE);
 }
 // Set servo position, connected to TIM2CH3 output compare
-void set_servo(float degree){
+void set_servo_alpha(float degree){
 	if(degree<0){
-		TIM_SetCompare3(TIM2,(int) (10600*(degree+216.5)/90));
+		TIM_SetCompare3(TIM2,(int) (13000*(degree+182.08)/90));
 	}
 	if(degree>=0){
-		TIM_SetCompare3(TIM2,(int) (13000*(degree+176.53)/90));
+		TIM_SetCompare3(TIM2,(int) (12800*(degree+184.92)/90));
+	}
+}
+void set_servo_lambda(float degree){
+	float deg = -degree;
+	if(deg<0){
+		TIM_SetCompare4(TIM2,(int) (13300*(deg+172.55)/90));
+	}
+	if(deg>=0){
+		TIM_SetCompare4(TIM2,(int) (13600*(deg+168.75)/90));
 	}
 }
 //Send USART packet

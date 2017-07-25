@@ -26,7 +26,7 @@
 //Variables
 char lcdstring[16],usart_char[16];
 //uninitialized variables
-int temp,sysclock,TIM2CH3=10000;
+int temp,sysclock,TIM2CH3=25500,TIM2CH4=25500;
 //initialized variables
 int tmr=0;
 uint16_t ADC_Buffer[1];
@@ -92,7 +92,7 @@ void init_GPIO(void){
 	GPIOAADC_struct.GPIO_Speed=GPIO_Speed_Level_3;
 	GPIO_Init(GPIOA,&GPIOAADC_struct);
 	//AF1 for TIM3CH2 output
-	GPIO_PinAFConfig(GPIOA,GPIO_PinSource7,GPIO_AF_1);
+	//GPIO_PinAFConfig(GPIOA,GPIO_PinSource7,GPIO_AF_1);
 	//PA9-PA10 USART1 RX/TX
 	GPIOAUSART_struct.GPIO_Mode=GPIO_Mode_AF;
 	GPIOAUSART_struct.GPIO_OType=GPIO_OType_PP;
@@ -114,12 +114,13 @@ void init_GPIO(void){
 	//PB10 TIM2CH3 PWM output
 	GPIOBTIM2_struct.GPIO_Mode=GPIO_Mode_AF;
 	GPIOBTIM2_struct.GPIO_OType=GPIO_OType_PP;
-	GPIOBTIM2_struct.GPIO_Pin=GPIO_Pin_10;
+	GPIOBTIM2_struct.GPIO_Pin=(GPIO_Pin_10|GPIO_Pin_11);
 	GPIOBTIM2_struct.GPIO_PuPd=GPIO_PuPd_NOPULL;
 	GPIOBTIM2_struct.GPIO_Speed=GPIO_Speed_Level_3;
 	GPIO_Init(GPIOB,&GPIOBTIM2_struct);
 	//PB10 AF2 for TIM2CH3 output
 	GPIO_PinAFConfig(GPIOB,GPIO_PinSource10,GPIO_AF_2);
+	GPIO_PinAFConfig(GPIOB,GPIO_PinSource11,GPIO_AF_2);
 }
 void init_ADC(void){
 	RCC_APB2PeriphClockCmd(RCC_APB2ENR_ADC1EN,ENABLE);
@@ -174,7 +175,6 @@ void init_DMA(void){
 void DMA1_Channel1_IRQHandler(void){
 	temp = ADC_Buffer[0];
 	DMA_ClearITPendingBit(DMA1_IT_TC1);
-
 }
 void init_TIM2(void){
 	RCC_APB1PeriphClockCmd(RCC_APB1ENR_TIM2EN,ENABLE);
@@ -186,6 +186,7 @@ void init_TIM2(void){
 	TIM2_struct.TIM_RepetitionCounter=0;
 	TIM_TimeBaseInit(TIM2,&TIM2_struct);
 	TIM_OC3FastConfig(TIM2,TIM_OCFast_Enable);
+	TIM_OC4FastConfig(TIM2,TIM_OCFast_Enable);
 	TIM_ITConfig(TIM2,TIM_IT_Update,ENABLE);
 	NVIC_InitTypeDef TIM2_NVIC;
 	TIM2_NVIC.NVIC_IRQChannel=TIM2_IRQn;
@@ -199,6 +200,8 @@ void init_TIM2(void){
 	TIM2_OCstruct.TIM_OCPolarity=TIM_OCPolarity_High;
 	//Init OC3 output at 50% Duty Cycle for testing
 	TIM_OC3Init(TIM2,&TIM2_OCstruct);
+	TIM2_OCstruct.TIM_Pulse=(int)(TIM2CH4);
+	TIM_OC4Init(TIM2,&TIM2_OCstruct);
 	TIM_Cmd(TIM2,ENABLE);
 }
 void TIM2_IRQHandler(void){
@@ -228,7 +231,8 @@ void TIM14_IRQHandler(void){
 	else{
 		TIM2CH3=10000;
 	}
-	TIM_SetCompare3(TIM2,TIM2CH3);
+	//TIM_SetCompare3(TIM2,TIM2CH3);
+	TIM_SetCompare3(TIM2,13300);
 	sprintf(usart_char,"%d\n",(int)(240));
 	send_packet(usart_char);
 	//sprintf(usart_char,"%d\n",tmr);
@@ -259,6 +263,14 @@ void set_servo_alph(float degree){
 	}
 	if(degree>=0){
 		TIM_SetCompare3(TIM2,(int) (13000*(degree+176.53)/90));
+	}
+}
+void set_servo_lam(float degree){
+	if(degree<0){
+		TIM_SetCompare4(TIM2,(int) (13300*(degree+172.55)/90));
+	}
+	if(degree>=0){
+		TIM_SetCompare4(TIM2,(int) (13600*(degree+168.75)/90));
 	}
 }
 void send_packet(const char *str){
