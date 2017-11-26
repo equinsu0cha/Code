@@ -17,6 +17,7 @@
 //====================================================================
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "stdio.h"
 #include "math.h"
 #include "lcd_stm32f0.h"
@@ -25,11 +26,12 @@
 #include "stm32f0xx_adc.h"
 //Global Variables
 char lcdstring[16],usart_char[16];;
-int sysclock,temp=14900,tmr=0,dir=1,TIM3OC2=2500;
+int sysclock,temp=14900,tmr=0,TIM3OC2=2500;
 int alph_0 = 0;
 int lam_0 = 0;
 int alph_step = -90;
-int lam_step = 0;
+int lam_step = -90;
+bool dir=1;
 uint16_t ADC_Buffer[1];
 //Function Declarations
 void init_GPIO(void);
@@ -73,10 +75,6 @@ void main(void){
 	init_DMA();
 	init_TIM2();
 	init_TIM3();
-	init_TIM14();
-	init_TIM17();
-	init_EXTI();
-	init_USART1();
 	// Start ADC
 	ADC_StartOfConversion(ADC1);
 	//For Loop
@@ -85,7 +83,7 @@ void main(void){
 	while((GPIO_ReadInputData(GPIOA)&GPIO_IDR_0)){}
 	lcd_command(CLEAR);
 	lcd_putstring("Spin up");
-	/*while(TIM3OC2<=3800){
+	while(TIM3OC2<=3800){
 		TIM3OC2++;
 		TIM_SetCompare2(TIM3,TIM3OC2);
 		GPIO_Write(GPIOB,(uint16_t)((255*TIM3OC2/3800)));
@@ -93,14 +91,18 @@ void main(void){
 			for(int y=0;y<=255;y++){}
 		}
 	}
-	*/
+
+	init_TIM14();
+	init_EXTI();
+	init_USART1();
+	init_TIM17();
 	for(;;){
 		lcd_command(CURSOR_HOME);
 		sprintf(lcdstring,"DEG:%d       ",(int)(ADC_Buffer[0]));
 		lcd_putstring(lcdstring);
-		//sprintf(lcdstring,"CMD:%d       ",(int)(ADC_Buffer[1]));
-		//lcd_command(LINE_TWO);
-		//lcd_putstring(lcdstring);
+		sprintf(lcdstring,"TIME:%d       ",(int)(tmr));
+		lcd_command(LINE_TWO);
+		lcd_putstring(lcdstring);
 	}
 }
 
@@ -279,13 +281,13 @@ void init_TIM17(void){
 	TIM_TimeBaseInitTypeDef TIM17_struct;
 	TIM17_struct.TIM_ClockDivision=0;
 	TIM17_struct.TIM_CounterMode=TIM_CounterMode_Up;
-	TIM17_struct.TIM_Period=60000;
-	TIM17_struct.TIM_Prescaler=255;
+	TIM17_struct.TIM_Period=65395;
+	TIM17_struct.TIM_Prescaler=733;
 	TIM17_struct.TIM_RepetitionCounter=0;
-	TIM_TimeBaseInit(TIM3,&TIM17_struct);
+	TIM_TimeBaseInit(TIM17,&TIM17_struct);
 	TIM_ITConfig(TIM17,TIM_IT_Update,ENABLE);
 	TIM17_NVIC();
-	//TIM_Cmd(TIM17,ENABLE);
+	TIM_Cmd(TIM17,ENABLE);
 }
 void TIM17_NVIC(void){
 	NVIC_InitTypeDef NVIC_TIM17;
@@ -295,7 +297,24 @@ void TIM17_NVIC(void){
 	NVIC_Init(&NVIC_TIM17);
 }
 void TIM17_IRQHandler(void){
-	TIM_ClearITPendingBit(TIM17,TIM_IT_Update);
+	if(tmr<5){
+		tmr++;
+		TIM_ClearITPendingBit(TIM17,TIM_IT_Update);
+	}
+	else{
+		if(dir!=1){
+			set_servo_lambda(lam_0);
+			set_servo_alpha(alph_0);
+			dir = 1;
+		}
+		else{
+			set_servo_lambda(lam_step);
+			set_servo_alpha(alph_step);
+			dir = 0;
+		}
+		tmr = 0;
+		TIM_ClearITPendingBit(TIM17,TIM_IT_Update);
+	}
 }
 void init_EXTI(void){
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG,ENABLE);
